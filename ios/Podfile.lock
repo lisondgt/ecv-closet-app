@@ -355,6 +355,9 @@ PODS:
     - React-Core (= 0.67.4)
     - React-jsi (= 0.67.4)
     - ReactCommon/turbomodule/core (= 0.67.4)
+  - Firebase/Auth (8.14.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (~> 8.14.0)
   - Firebase/CoreOnly (8.14.0):
     - FirebaseCore (= 8.14.0)
   - Firebase/Crashlytics (8.14.0):
@@ -371,6 +374,11 @@ PODS:
     - FirebaseStorage (~> 8.14.0)
   - FirebaseABTesting (8.14.0):
     - FirebaseCore (~> 8.0)
+  - FirebaseAuth (8.14.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GTMSessionFetcher/Core (~> 1.5)
   - FirebaseCore (8.14.0):
     - FirebaseCoreDiagnostics (~> 8.0)
     - GoogleUtilities/Environment (~> 7.7)
@@ -489,6 +497,10 @@ PODS:
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.7.0):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
   - GoogleUtilities/Environment (7.7.0):
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/ISASwizzler (7.7.0)
@@ -496,7 +508,13 @@ PODS:
     - GoogleUtilities/Environment
   - GoogleUtilities/MethodSwizzler (7.7.0):
     - GoogleUtilities/Logger
+  - GoogleUtilities/Network (7.7.0):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
   - "GoogleUtilities/NSData+zlib (7.7.0)"
+  - GoogleUtilities/Reachability (7.7.0):
+    - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
   - "gRPC-C++ (1.28.2)":
@@ -807,6 +825,10 @@ PODS:
   - RNFBApp (14.7.0):
     - Firebase/CoreOnly (= 8.14.0)
     - React-Core
+  - RNFBAuth (14.7.0):
+    - Firebase/Auth (= 8.14.0)
+    - React-Core
+    - RNFBApp
   - RNFBCrashlytics (14.7.0):
     - Firebase/Crashlytics (= 8.14.0)
     - React-Core
@@ -891,6 +913,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - "RNFBPerf (from `../node_modules/@react-native-firebase/perf`)"
@@ -907,6 +930,7 @@ SPEC REPOS:
     - CocoaAsyncSocket
     - Firebase
     - FirebaseABTesting
+    - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseCrashlytics
@@ -1002,6 +1026,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
+  RNFBAuth:
+    :path: "../node_modules/@react-native-firebase/auth"
   RNFBCrashlytics:
     :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBFirestore:
@@ -1029,6 +1055,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 0f4e1f4cfeace095694436e7c7fcc5bf4b03a0ff
   Firebase: 7e8fe528c161b9271d365217a74c16aaf834578e
   FirebaseABTesting: aaa0e096c9fc9972ce6806d596e8fcc077d4371f
+  FirebaseAuth: c5fde343630090253d3af7e2d35697b414b40202
   FirebaseCore: b84a44ee7ba999e0f9f76d198a9c7f60a797b848
   FirebaseCoreDiagnostics: fd0c8490f34287229c1d6c103d3a55f81ec85712
   FirebaseCrashlytics: 079ef36f5c4b7161188928faec40fa276ebefd84
@@ -1085,6 +1112,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9d3c82ddf7ffdad9fbe6a81c6d6f8c06385464d
   ReactCommon: 07d0c460b9ba9af3eaf1b8f5abe7daaad28c9c4e
   RNFBApp: 097a31d372b3db15b41c7a1a5c429433b0609e12
+  RNFBAuth: 85b7ad91e3783dfde011702b2b747b1fd7be7234
   RNFBCrashlytics: 4ec9aae1a1dbb6572d095417392483bec82b07bb
   RNFBFirestore: 06d06485901708c3b2c8f569433058911a82c121
   RNFBPerf: 5e5545978f5010df012c8aab97662dc4f49304cf

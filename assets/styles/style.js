@@ -8,16 +8,36 @@ export default StyleSheet.create({
         textTransform: 'uppercase',
         color: '#09091A'
     },
+    H1TitleNoMargin: {
+        fontFamily: 'Lora-Bold',
+        fontSize: 22,
+        textTransform: 'uppercase',
+        color: '#09091A'
+    },
     H2Title: {
         fontFamily: 'Lora-SemiBold',
         fontSize: 20,
         marginBottom: 20,
         color: '#09091A'
     },
+    H2TitleCenter: {
+        fontFamily: 'Lora-SemiBold',
+        fontSize: 20,
+        marginBottom: 20,
+        color: '#09091A',
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
     H3Title: {
         fontFamily: 'Lora-SemiBold',
         fontSize: 18,
         marginBottom: 10,
+        color: '#09091A'
+    },
+    H3TitleNoMargin: {
+        fontFamily: 'Lora-SemiBold',
+        fontSize: 18,
+        marginBottom: 0,
         color: '#09091A'
     },
     H3Subtitle: {
@@ -32,7 +52,19 @@ export default StyleSheet.create({
         margin: 0,
         color: '#09091A'
     },
-    textCenter: {
+    TextBold: {
+        fontFamily: 'Jost-Bold',
+        fontSize: 16,
+        margin: 0,
+        color: '#09091A'
+    },
+    textDanger: {
+        fontFamily: 'Jost-Regular',
+        fontSize: 14,
+        margin: 0,
+        color: '#dc3545'
+    },
+    contentCenter: {
         textAlign: 'center',
         alignSelf: 'center'
     },
@@ -45,6 +77,15 @@ export default StyleSheet.create({
     },
     MarginBottom10: {
         marginBottom: 10,
+    },
+    MarginBottom15: {
+        marginBottom: 15,
+    },
+    MarginBottom20: {
+        marginBottom: 20,
+    },
+    MarginBottom40: {
+        marginBottom: 40,
     },
     MarginBottom60: {
         marginBottom: 60,
@@ -61,10 +102,21 @@ export default StyleSheet.create({
     },
     PrimaryButton: {
         backgroundColor: '#DD6E42',
-        paddingVertical: 10,
-        borderRadius: 20,
+        paddingVertical: 15,
+        borderRadius: 30,
     },
     PrimaryButtonText: {
+        fontFamily: 'Jost-Medium',
+        fontSize: 16,
+        color: '#FFFFFF',
+        textAlign: 'center'
+    },
+    SecondaryButton: {
+        backgroundColor: '#3D5C76',
+        paddingVertical: 15,
+        borderRadius: 30,
+    },
+    SecondaryButtonText: {
         fontFamily: 'Jost-Medium',
         fontSize: 16,
         color: '#FFFFFF',
@@ -111,10 +163,19 @@ export default StyleSheet.create({
         marginLeft: 15
     },
     CancelText: {
+        fontFamily: 'Jost-SemiBold',
         color: '#808F9D',
         fontSize: 14,
         fontWeight: '600',
         textTransform: 'uppercase'
+    },
+    CancelTextCenter: {
+        fontFamily: 'Jost-SemiBold',
+        color: '#808F9D',
+        fontSize: 14,
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        textAlign: 'center'
     },
     IconHeaderLeft: {
         marginLeft: 15
@@ -221,6 +282,12 @@ export default StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
     },
     input: {
         backgroundColor: '#FFFFFF',

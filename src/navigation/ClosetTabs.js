@@ -60,7 +60,7 @@ function ClosetTabs() {
         name="OutfitList"
         component={OutfitList}
         options={{
-          tabBarLabel: 'Closet',
+          tabBarLabel: 'Outfits',
           tabBarShowLabel: false,
           tabBarIcon: ({ focused, size }) => (
             focused
@@ -72,7 +72,7 @@ function ClosetTabs() {
         name="Calendar"
         component={Calendar}
         options={{
-          tabBarLabel: 'Closet',
+          tabBarLabel: 'Calendar',
           tabBarShowLabel: false,
           tabBarIcon: ({ focused, size }) => (
             focused
@@ -84,7 +84,7 @@ function ClosetTabs() {
         name="Analytics"
         component={Analytics}
         options={{
-          tabBarLabel: 'Closet',
+          tabBarLabel: 'Analytics',
           tabBarShowLabel: false,
           tabBarIcon: ({ focused, size }) => (
             focused
@@ -96,7 +96,7 @@ function ClosetTabs() {
         name="Account"
         component={Account}
         options={{
-          tabBarLabel: 'Closet',
+          tabBarLabel: 'Account',
           tabBarShowLabel: false,
           tabBarIcon: ({ focused, size }) => (
             focused

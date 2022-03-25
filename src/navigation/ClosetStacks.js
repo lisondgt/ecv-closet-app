@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useIsFocused } from "@react-navigation/native";
+import auth from '@react-native-firebase/auth';
 
+import Home from './../views/login-registration/Home';
+import Login from './../views/login-registration/Login';
+import Signup from './../views/login-registration/Signup';
 import ClosetTabs from './ClosetTabs';
 import ClothingAdd from './../views/closet/ClothingAdd';
 import OutfitAdd from './../views/outfits/OutfitAdd';
@@ -13,6 +18,7 @@ import ClothingUpdateSize from './../views/closet/ClothingUpdateSize';
 import ClothingUpdateStatus from './../views/closet/ClothingUpdateStatus';
 import ClothingUpdateFit from './../views/closet/ClothingUpdateFit';
 import ClothingUpdateRate from './../views/closet/ClothingUpdateRate';
+import AccountUpdate from './../views/account/AccountUpdate';
 
 import ClosetLogo from './../../assets/images/closet-logo.svg';
 
@@ -25,6 +31,26 @@ function LogoTitle() {
 }
 
 function ClosetStacks() {
+
+  const isFocused = useIsFocused();
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    if (isFocused) {
+      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+      return subscriber; // unsubscribe on unmount
+    }
+  }, [isFocused]);
+
+  if (initializing) return null;
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -33,20 +59,33 @@ function ClosetStacks() {
         headerStyle: { backgroundColor: '#F0F1F1' },
         headerShadowVisible: false,
       }}>
-      <Stack.Screen name="Home" component={ClosetTabs} options={{
-        headerShown: false,
-      }} />
-      <Stack.Screen name="ClothingAdd" component={ClothingAdd} />
-      <Stack.Screen name="ClothingDetail" component={ClothingDetail} />
-      <Stack.Screen name="ClothingUpdateImage" component={ClothingUpdateImage} />
-      <Stack.Screen name="ClothingUpdateType" component={ClothingUpdateType} />
-      <Stack.Screen name="ClothingUpdateColor" component={ClothingUpdateColor} />
-      <Stack.Screen name="ClothingUpdateSeason" component={ClothingUpdateSeason} />
-      <Stack.Screen name="ClothingUpdateSize" component={ClothingUpdateSize} />
-      <Stack.Screen name="ClothingUpdateStatus" component={ClothingUpdateStatus} />
-      <Stack.Screen name="ClothingUpdateFit" component={ClothingUpdateFit} />
-      <Stack.Screen name="ClothingUpdateRate" component={ClothingUpdateRate} />
-      <Stack.Screen name="OutfitAdd" component={OutfitAdd} />
+      {user ? (
+        <>
+          <Stack.Screen name="ClosetTabs" component={ClosetTabs} options={{
+            headerShown: false,
+          }} />
+          <Stack.Screen name="ClothingAdd" component={ClothingAdd} />
+          <Stack.Screen name="ClothingDetail" component={ClothingDetail} />
+          <Stack.Screen name="ClothingUpdateImage" component={ClothingUpdateImage} />
+          <Stack.Screen name="ClothingUpdateType" component={ClothingUpdateType} />
+          <Stack.Screen name="ClothingUpdateColor" component={ClothingUpdateColor} />
+          <Stack.Screen name="ClothingUpdateSeason" component={ClothingUpdateSeason} />
+          <Stack.Screen name="ClothingUpdateSize" component={ClothingUpdateSize} />
+          <Stack.Screen name="ClothingUpdateStatus" component={ClothingUpdateStatus} />
+          <Stack.Screen name="ClothingUpdateFit" component={ClothingUpdateFit} />
+          <Stack.Screen name="ClothingUpdateRate" component={ClothingUpdateRate} />
+          <Stack.Screen name="OutfitAdd" component={OutfitAdd} />
+          <Stack.Screen name="AccountUpdate" component={AccountUpdate} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Home" component={Home} options={{
+            headerShown: false,
+          }} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
+        </>
+      )}
     </Stack.Navigator>
   );
 }

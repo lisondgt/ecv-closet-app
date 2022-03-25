@@ -7,6 +7,7 @@ import styles from '../../assets/styles/style.js';
 import CameraWhite from '../../assets/images/camera-white.svg';
 import ImageWhite from '../../assets/images/image-white.svg';
 import PencilWhite from '../../assets/images/pencil-alt-white.svg';
+import TimesDark from '../../assets/images/times-dark.svg';
 
 export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
 
@@ -82,8 +83,16 @@ export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <View style={styles.textCenter}>
-                            <Text style={styles.H3Title}>Modifier la photo</Text>
+                        <View style={styles.modalHeader}>
+                            {imageUri !== "" ? (
+                                <Text style={styles.H3TitleNoMargin}>Modifier la photo</Text>
+                            ) : (
+                                <Text style={styles.H3TitleNoMargin}>Ajouter une photo</Text>
+                            )}
+                            <TouchableOpacity
+                                onPress={() => setModalVisible(!modalVisible)}>
+                                <TimesDark width={20} height={20} />
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.MarginBottom10}>
                             <TouchableOpacity
@@ -101,12 +110,6 @@ export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
                                 <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity
-                            style={styles.textCenter}
-                            onPress={() => setModalVisible(!modalVisible)}
-                        >
-                            <Text style={styles.CancelText}>Annuler</Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>

@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { ClothingDao } from '../../dao/ClothingDao';
-import storage from '@react-native-firebase/storage';
 
-import styles from '../../../assets/styles/style.js';
+import styles from '../../assets/styles/style.js';
 
-import ChevronLeftOrange from './../../../assets/images/chevron-left-orange.svg';
-import CameraWhite from './../../../assets/images/camera-white.svg';
-import ImageWhite from './../../../assets/images/image-white.svg';
-import PencilWhite from './../../../assets/images/pencil-alt-white.svg';
-import TimesDark from './../../../assets/images/times-dark.svg';
+import CameraGrey from '../../assets/images/camera-grey.svg';
+import CameraWhite from '../../assets/images/camera-white.svg';
+import ImageWhite from '../../assets/images/image-white.svg';
+import TimesDark from '../../assets/images/times-dark.svg';
 
-const ClothingUpdateImage = ({ route, navigation }) => {
+export default function SignupStep3({ imageUri, setImageUri, imageName, setImageName, nextStep }) {
 
-    const { key, ItemValue } = route.params;
-    const [imageUri, setImageUri] = useState(ItemValue);
-    const [imageName, setImageName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
 
     const cameraLaunch = () => {
@@ -69,37 +63,11 @@ const ClothingUpdateImage = ({ route, navigation }) => {
         });
     };
 
-    async function updateItem() {
-        if (imageUri !== ItemValue) {
-            storage()
-                .ref(imageName)
-                .putFile(imageUri)
-                .then(() => {
-                    storage().ref('/' + imageName).getDownloadURL().then((url) => {
-                        const clothingDao = new ClothingDao();
-                        clothingDao.update(key, {
-                            image: url,
-                        }).then(() => navigation.goBack())
-                    })
-                })
-                .catch((e) => console.log('uploading image error => ', e));
-        } else {
-            navigation.goBack()
-        }
+    const deleteImage = () => {
+        setModalVisible(false);
+        setImageUri('');
+        setImageName('');
     }
-
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerLeft: () => (
-                <TouchableOpacity
-                    onPress={() =>
-                        navigation.goBack()}
-                    style={styles.IconHeaderLeft}>
-                    <ChevronLeftOrange width={25} height={25} />
-                </TouchableOpacity>
-            ),
-        });
-    }, [navigation]);
 
     return (
         <View style={styles.ContainerView}>
@@ -132,7 +100,7 @@ const ClothingUpdateImage = ({ route, navigation }) => {
                                 <Text style={styles.PrimaryButtonIconText}>Caméra</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.MarginBottom10}>
+                        <View style={styles.MarginBottom20}>
                             <TouchableOpacity
                                 onPress={selectImage}
                                 style={styles.PrimaryButtonIcon}>
@@ -140,70 +108,76 @@ const ClothingUpdateImage = ({ route, navigation }) => {
                                 <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
                             </TouchableOpacity>
                         </View>
+                        {imageUri !== "" ? (
+                            <TouchableOpacity
+                                style={styles.contentCenter}
+                                onPress={deleteImage}
+                            >
+                                <Text style={styles.CancelText}>Supprimer</Text>
+                            </TouchableOpacity>) : (null)}
                     </View>
                 </View>
             </Modal>
-            <Text style={styles.H2Title}>Modifier l'image</Text>
-            <View>
-                <View style={componentStyles.ContainerImage}>
-                    <TouchableOpacity
-                        onPress={() => setModalVisible(true)}>
-                        <View style={componentStyles.ColImage}>
-                            <View style={componentStyles.ContentImage}>
+            <View style={styles.MarginBottom40}>
+                <Text style={styles.H2TitleCenter}>Voudrais tu ajouter une photo de profile ?</Text>
+            </View>
+            <View style={styles.contentCenter}>
+                <TouchableOpacity
+                    onPress={() => setModalVisible(true)}>
+                    {imageUri !== "" ? (
+                        <View>
+                            <View style={styles.MarginBottom10}>
                                 <Image
                                     source={{ uri: imageUri }}
                                     style={componentStyles.Image}
                                 />
                             </View>
-
-                            <View
-                                style={componentStyles.EditIconContainer}>
-                                <View style={componentStyles.EditIcon}>
-                                    <PencilWhite width={8} height={8} />
-                                </View>
-                            </View>
+                            <Text style={styles.CancelTextCenter}>Modifier</Text>
                         </View>
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                    onPress={() => updateItem()}
-                    style={styles.PrimaryButton}>
-                    <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
+                    ) : (
+                        <View
+                            style={componentStyles.buttonCamera}>
+                            <CameraGrey width={50} height={50} />
+                        </View>
+                    )}
                 </TouchableOpacity>
+            </View>
+            <View style={styles.ContainerPrimaryButtonBottom}>
+                {imageUri !== "" ? (
+                    <TouchableOpacity
+                        style={styles.PrimaryButton}
+                        onPress={nextStep}>
+                        <Text style={styles.PrimaryButtonText}>Suivant</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity
+                        style={styles.contentCenter}
+                        onPress={nextStep}>
+                        <Text style={styles.CancelText}>Passer</Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </View>
     );
 }
 
 const componentStyles = StyleSheet.create({
-    ContainerImage: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    ColImage: {
-        width: '70%'
-    },
-    ContentImage: {
-        width: '100%',
-        aspectRatio: 1
-    },
-    Image: {
-        width: '100%',
-        height: '100%'
-    },
-    EditIconContainer: {
-        position: 'absolute',
-        top: 10,
-        right: 10
-    },
-    EditIcon: {
-        backgroundColor: '#808F9D',
-        borderRadius: 20,
-        width: 20,
-        height: 20,
+    buttonCamera: {
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#ACB5BC',
+        borderRadius: 150,
+        width: 150,
+        height: 150,
         justifyContent: 'center',
         alignItems: 'center'
     },
+    Image: {
+        width: 150,
+        height: 150,
+        borderWidth: 1,
+        borderColor: '#ACB5BC',
+        borderRadius: 150,
+        borderRadius: 150
+    }
 });
-
-export default ClothingUpdateImage;
