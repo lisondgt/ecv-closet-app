@@ -4,6 +4,7 @@ import ClothingAddStep1 from '../../components/ClothingAddStep1';
 import ClothingAddStep2 from '../../components/ClothingAddStep2';
 import ClothingAddStep3 from '../../components/ClothingAddStep3';
 import { ClothingDao } from '../../dao/ClothingDao';
+import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
 import styles from '../../../assets/styles/style.js';
@@ -14,6 +15,7 @@ import TimesOrange from './../../../assets/images/times-orange.svg';
 const ClothingAdd = ({ navigation }) => {
 
     const [values, setValues] = useState({
+        userId: auth().currentUser.uid,
         imageUrl: "",
         imageName: "",
         imageUri: "",
@@ -87,6 +89,7 @@ const ClothingAdd = ({ navigation }) => {
                 storage().ref('/' + values.imageName).getDownloadURL().then((url) => {
                     const clothingDao = new ClothingDao();
                     clothingDao.push({
+                        userId: values.userId,
                         image: url,
                         type: values.type,
                         color: values.color,

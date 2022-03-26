@@ -125,27 +125,42 @@ const Signup = ({ navigation }) => {
   }
 
   registerUser = () => {
-    storage()
-      .ref(imageName)
-      .putFile(imageUri)
-      .then(() => {
-        storage().ref('/' + imageName).getDownloadURL().then((url) => {
-          setIsLoading(true)
-          auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then((res) => {
-              res.user.updateProfile({
-                displayName: firstname + lastname,
-                photoURL: url
+    if (imageUri !== '') {
+      storage()
+        .ref(imageName)
+        .putFile(imageUri)
+        .then(() => {
+          storage().ref('/' + imageName).getDownloadURL().then((url) => {
+            setIsLoading(true)
+            auth()
+              .createUserWithEmailAndPassword(email, password)
+              .then((res) => {
+                res.user.updateProfile({
+                  displayName: firstname + ' ' + lastname,
+                  photoURL: url
+                })
+                console.log(res)
+                console.log('User registered successfully!')
+                setIsLoading(false)
               })
-              console.log(res)
-              console.log('User registered successfully!')
-              setIsLoading(false)
-            })
-            .catch(error => console.log('errorMessage:', error.message))
+              .catch(error => console.log('errorMessage:', error.message))
+          })
         })
-      })
-      .catch((e) => console.log('uploading image error => ', e));
+        .catch((e) => console.log('uploading image error => ', e));
+    } else {
+      auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((res) => {
+          res.user.updateProfile({
+            displayName: firstname + ' ' + lastname,
+          })
+          console.log(res)
+          console.log('User registered successfully!')
+          setIsLoading(false)
+        })
+        .catch(error => console.log('errorMessage:', error.message))
+    }
+
   }
 
   const updateHeader = () => {

@@ -19,6 +19,8 @@ import ClothingUpdateStatus from './../views/closet/ClothingUpdateStatus';
 import ClothingUpdateFit from './../views/closet/ClothingUpdateFit';
 import ClothingUpdateRate from './../views/closet/ClothingUpdateRate';
 import AccountUpdate from './../views/account/AccountUpdate';
+import AccountUpdateEmail from '../views/account/AccountUpdateEmail';
+import AccountUpdatePassword from '../views/account/AccountUpdatePassword';
 
 import ClosetLogo from './../../assets/images/closet-logo.svg';
 
@@ -76,6 +78,8 @@ function ClosetStacks() {
           <Stack.Screen name="ClothingUpdateRate" component={ClothingUpdateRate} />
           <Stack.Screen name="OutfitAdd" component={OutfitAdd} />
           <Stack.Screen name="AccountUpdate" component={AccountUpdate} />
+          <Stack.Screen name="AccountUpdateEmail" component={AccountUpdateEmail} />
+          <Stack.Screen name="AccountUpdatePassword" component={AccountUpdatePassword} />
         </>
       ) : (
         <>

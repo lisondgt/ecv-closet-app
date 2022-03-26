@@ -5,10 +5,11 @@ export class ClothingDao extends FirestoreDao {
         super('clothing');
     }
 
-    async fetchAllByType(type) {
+    async fetchAllByType(type, currentUserId) {
         try {
             const result = await this.getCollection()
                 .where('type', '==', type)
+                .where('userId', '==', currentUserId)
                 .get();
 
             if (result?.docs?.length > 0) {

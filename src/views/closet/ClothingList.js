@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, SectionList, FlatList, Image } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { ClothingDao } from './../../dao/ClothingDao';
+import auth from '@react-native-firebase/auth';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -9,6 +10,7 @@ import IconPlusWhite from './../../../assets/images/icon-plus-white.svg';
 
 const ClothingList = ({ navigation }) => {
 
+  const currentUserId = auth().currentUser.uid;
   const isFocused = useIsFocused();
   const [clothingTops, setClothingTops] = useState([]);
   const [clothingBottoms, setClothingBottoms] = useState([]);
@@ -30,13 +32,13 @@ const ClothingList = ({ navigation }) => {
     if (isFocused) {
       const clothingDao = new ClothingDao();
 
-      clothingDao.fetchAllByType('Hauts').then(setClothingTops);
-      clothingDao.fetchAllByType('Pantalons').then(setClothingBottoms);
-      clothingDao.fetchAllByType('Robes').then(setClothingDresses);
-      clothingDao.fetchAllByType('Jupes').then(setClothingSkirts);
-      clothingDao.fetchAllByType('Vestes / Manteaux').then(setClothingLayers);
-      clothingDao.fetchAllByType('Chaussures').then(setClothingShoes);
-      clothingDao.fetchAllByType('Accessoires').then(setClothingAccessories);
+      clothingDao.fetchAllByType('Hauts', currentUserId).then(setClothingTops);
+      clothingDao.fetchAllByType('Pantalons', currentUserId).then(setClothingBottoms);
+      clothingDao.fetchAllByType('Robes', currentUserId).then(setClothingDresses);
+      clothingDao.fetchAllByType('Jupes', currentUserId).then(setClothingSkirts);
+      clothingDao.fetchAllByType('Vestes / Manteaux', currentUserId).then(setClothingLayers);
+      clothingDao.fetchAllByType('Chaussures', currentUserId).then(setClothingShoes);
+      clothingDao.fetchAllByType('Accessoires', currentUserId).then(setClothingAccessories);
     }
 
   }, [isFocused]);

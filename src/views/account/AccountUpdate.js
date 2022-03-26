@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import { useIsFocused } from "@react-navigation/native";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import styles from '../../../assets/styles/style.js';
@@ -14,15 +15,24 @@ import TimesDark from '../../../assets/images/times-dark.svg';
 
 const AccountUpdate = ({ navigation }) => {
 
-    const getLastname = auth().currentUser.displayName.replace(/[\[\]?.,\/#!$%\^&\*;:{}=\\|_~()]/g, "").split(" ");
-    const [firstname, onChangeFirstname] = useState(auth().currentUser.displayName.replace(/ .*/, ''));
-    const [lastname, onChangeLastname] = useState(getLastname[getLastname.length - 1]);
-    const [email, onChangeEmail] = useState(auth().currentUser.email);
-    const [emailErrorMessage, setEmailErrorMessage] = useState('');
-    const [imageUri, setImageUri] = useState(auth().currentUser.photoURL);
+    const isFocused = useIsFocused();
+    const [firstname, onChangeFirstname] = useState('');
+    const [lastname, onChangeLastname] = useState('');
+    const [imageUri, setImageUri] = useState('');
     const [imageName, setImageName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+
+        if (isFocused && auth().currentUser.displayName) {
+            const getLastname = auth().currentUser.displayName.replace(/[\[\]?.,\/#!$%\^&\*;:{}=\\|_~()]/g, "").split(" ");
+            const userLastname = getLastname[getLastname.length - 1];
+            onChangeLastname(userLastname);
+            onChangeFirstname(auth().currentUser.displayName.replace(/ .*/, ''));
+            setImageUri(auth().currentUser.photoURL)
+        }
+
+    }, [isFocused]);
 
     const cameraLaunch = () => {
         const options = {
@@ -76,42 +86,40 @@ const AccountUpdate = ({ navigation }) => {
 
     const deleteImage = () => {
         setModalVisible(false);
-        setImageUri('');
-        setImageName('');
+        setImageUri(null);
+        setImageName(null);
     }
 
     editUser = () => {
 
-        if (email.length == 0) {
-            setEmailErrorMessage("L'email est requis");
-        } else {
-            if (imageUri !== auth().currentUser.photoURL) {
-                storage()
-                    .ref(imageName)
-                    .putFile(imageUri)
-                    .then(() => {
-                        storage().ref('/' + imageName).getDownloadURL().then((url) => {
-                            setIsLoading(true)
-                            auth()
-                                .currentUser.updateProfile({
-                                    displayName: firstname + ' ' + lastname,
-                                    photoURL: url
-                                }).then(() => {
-                                    setIsLoading(false)
-                                    navigation.goBack()
-                                }
-                                )
-                                .catch(error => console.log('errorMessage:', error.message))
-                        })
+        if ((imageUri !== auth().currentUser.photoURL) && (imageUri !== null)) {
+            storage()
+                .ref(imageName)
+                .putFile(imageUri)
+                .then(() => {
+                    storage().ref('/' + imageName).getDownloadURL().then((url) => {
+                        auth()
+                            .currentUser.updateProfile({
+                                displayName: firstname + ' ' + lastname,
+                                photoURL: url
+                            }).then(() => navigation.goBack())
+                            .catch(error => console.log('errorMessage:', error.message))
                     })
-                    .catch((e) => console.log('uploading image error => ', e));
-            } else {
-                auth()
-                    .currentUser.updateProfile({
-                        displayName: firstname + ' ' + lastname,
-                    }).then(() => navigation.goBack())
-                    .catch(error => console.log('errorMessage:', error.message))
-            }
+                })
+                .catch((e) => console.log('uploading image error => ', e));
+        } else if (imageUri == auth().currentUser.photoURL) {
+            auth()
+                .currentUser.updateProfile({
+                    displayName: firstname + ' ' + lastname,
+                }).then(() => navigation.goBack())
+                .catch(error => console.log('errorMessage:', error.message))
+        } else {
+            auth()
+                .currentUser.updateProfile({
+                    displayName: firstname + ' ' + lastname,
+                    photoURL: ''
+                }).then(() => navigation.goBack())
+                .catch(error => console.log('errorMessage:', error.message))
         }
     }
 
@@ -141,7 +149,7 @@ const AccountUpdate = ({ navigation }) => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.modalHeader}>
-                            {imageUri !== "" ? (
+                            {imageUri !== null ? (
                                 <Text style={styles.H3TitleNoMargin}>Modifier la photo</Text>
                             ) : (
                                 <Text style={styles.H3TitleNoMargin}>Ajouter une photo</Text>
@@ -167,7 +175,7 @@ const AccountUpdate = ({ navigation }) => {
                                 <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
                             </TouchableOpacity>
                         </View>
-                        {imageUri !== "" ? (
+                        {imageUri !== null ? (
                             <TouchableOpacity
                                 style={styles.contentCenter}
                                 onPress={deleteImage}
@@ -181,7 +189,7 @@ const AccountUpdate = ({ navigation }) => {
             <View style={styles.contentCenter}>
                 <TouchableOpacity
                     onPress={() => setModalVisible(true)}>
-                    {imageUri !== "" ? (
+                    {imageUri !== null ? (
                         <View>
                             <View style={styles.MarginBottom10}>
                                 <Image
@@ -220,21 +228,6 @@ const AccountUpdate = ({ navigation }) => {
                     onChangeText={onChangeFirstname}
                     value={firstname}
                 />
-            </View>
-            <View>
-                <View style={styles.MarginBottom10}>
-                    <Text style={styles.Text}>Email</Text>
-                </View>
-                <TextInput
-                    style={styles.input}
-                    label={"Email"}
-                    autoCapitalize='none'
-                    keyboardType="email-address"
-                    autoCorrect={false}
-                    onChangeText={onChangeEmail}
-                    value={email}
-                />
-                {emailErrorMessage ? <Text style={styles.textDanger}>{emailErrorMessage}</Text> : null}
             </View>
             <View style={styles.ContainerPrimaryButtonBottom}>
                 <TouchableOpacity

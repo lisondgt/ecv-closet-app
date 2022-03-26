@@ -15,6 +15,7 @@ const Account = ({ navigation }) => {
   const [user, setUser] = useState({
     displayName: '',
     photoURL: '',
+    uid: '',
   });
 
   useEffect(() => {
@@ -22,7 +23,8 @@ const Account = ({ navigation }) => {
     if (isFocused) {
       setUser({
         displayName: auth().currentUser.displayName,
-        photoURL: auth().currentUser.photoURL
+        photoURL: auth().currentUser.photoURL,
+        uid: auth().currentUser.uid
       })
       const userOk = auth().currentUser;
 
@@ -52,12 +54,31 @@ const Account = ({ navigation }) => {
       .catch(error => setUser({ errorMessage: error.message }))
   }
 
+  const deleteAccountAlert = () =>
+    Alert.alert(
+      "Supprimer mon compte",
+      "Êtes vous sûre de vouloir supprimer votre compte ?",
+      [
+        {
+          text: "Annuler",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Oui", onPress: () => deleteAccount() }
+      ]
+    );
+
+  deleteAccount = () => {
+    auth().currentUser.delete()
+      .catch(error => setUser({ errorMessage: error.message }))
+  }
+
   return (
     <View style={styles.ContainerView}>
       <Text style={styles.H1Title}>Mon compte</Text>
       <View style={styles.MarginBottom10}>
         <View style={styles.contentCenter}>
-          {user.photoURL !== "" ? (
+          {user.photoURL !== null ? (
             <View>
               <Image
                 source={{ uri: user.photoURL }}
@@ -88,7 +109,19 @@ const Account = ({ navigation }) => {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AccountUpdateEmail')}>
+            <View style={viewStyles.UserField}>
+              <View style={viewStyles.ContentLeft}>
+                <Text style={styles.Text}>Changer mon adresse email</Text>
+              </View>
+              <View style={viewStyles.ContentRight}>
+                <ChevronRightGrey style={viewStyles.MarginLeft} width={15} height={15} />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AccountUpdatePassword')}>
             <View style={viewStyles.UserField}>
               <View style={viewStyles.ContentLeft}>
                 <Text style={styles.Text}>Changer de mot de passe</Text>
@@ -98,7 +131,8 @@ const Account = ({ navigation }) => {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => deleteAccountAlert()}>
             <View style={viewStyles.UserField}>
               <View style={viewStyles.ContentLeft}>
                 <Text style={styles.Text}>Supprimer mon compte</Text>
@@ -119,6 +153,7 @@ const Account = ({ navigation }) => {
               </View>
             </View>
           </TouchableOpacity>
+          <Text>{user.uid}</Text>
         </View>
       </View>
     </View>
