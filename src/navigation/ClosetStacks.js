@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useIsFocused } from "@react-navigation/native";
-import auth from '@react-native-firebase/auth';
+import { AuthService } from './../services/AuthService';
 
 import Home from './../views/login-registration/Home';
 import Login from './../views/login-registration/Login';
@@ -46,8 +46,7 @@ function ClosetStacks() {
 
   useEffect(() => {
     if (isFocused) {
-      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-      return subscriber; // unsubscribe on unmount
+      return new AuthService().getUserState(onAuthStateChanged);
     }
   }, [isFocused]);
 

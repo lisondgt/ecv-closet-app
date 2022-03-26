@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
-import auth from '@react-native-firebase/auth';
+import { AuthService } from '../../services/AuthService.js';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -8,6 +8,7 @@ import ChevronLeftOrange from '../../../assets/images/chevron-left-orange.svg';
 
 const AccountUpdatePassword = ({ navigation }) => {
 
+    const authService = new AuthService();
     const [currentPassword, onChangeCurrentPassword] = useState('');
     const [newPassword, onChangeNewPassword] = useState('');
     const [newPasswordErrorMessage, setNewPasswordErrorMessage] = useState('');
@@ -42,27 +43,17 @@ const AccountUpdatePassword = ({ navigation }) => {
 
             /** Call Your API */
         } else {
-            setNewPasswordErrorMessage("")
-            setConfirmNewPasswordErrorMessage("")
-            changePassword()
+            setNewPasswordErrorMessage("");
+            setConfirmNewPasswordErrorMessage("");
+            changePassword();
         }
-    }
-
-    const reauthenticate = () => {
-        var user = auth().currentUser;
-        var cred = auth.EmailAuthProvider.credential(
-            user.email, currentPassword);
-        return user.reauthenticateWithCredential(cred);
-    }
+    };
 
     const changePassword = () => {
-        reauthenticate(currentPassword).then(() => {
-            auth().currentUser.updatePassword(newPassword).then(() => {
-                console.log("Password updated!");
-            }).catch((error) => { console.log(error); });
-        }).then(() => navigation.goBack())
-            .catch((error) => { console.log(error); });
-    }
+        authService.reauthenticate(currentPassword).then(() => {
+            authService.changePassword(newPassword);
+        }).then(() => navigation.goBack());
+    };
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -127,7 +118,7 @@ const AccountUpdatePassword = ({ navigation }) => {
             </View>
         </View>
     );
-}
+};
 
 const viewStyles = StyleSheet.create({
 });

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ClothingDao } from '../../dao/ClothingDao';
-import storage from '@react-native-firebase/storage';
+import { StorageService } from '../../services/StorageService';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -41,7 +41,7 @@ const ClothingUpdateImage = ({ route, navigation }) => {
                 setImageName(imageName);
             }
         });
-    }
+    };
 
     const selectImage = () => {
         const options = {
@@ -71,20 +71,14 @@ const ClothingUpdateImage = ({ route, navigation }) => {
 
     async function updateItem() {
         if (imageUri !== ItemValue) {
-            storage()
-                .ref(imageName)
-                .putFile(imageUri)
-                .then(() => {
-                    storage().ref('/' + imageName).getDownloadURL().then((url) => {
-                        const clothingDao = new ClothingDao();
-                        clothingDao.update(key, {
-                            image: url,
-                        }).then(() => navigation.goBack())
-                    })
-                })
-                .catch((e) => console.log('uploading image error => ', e));
+            new StorageService().uploadAndGetUrl(imageName, imageUri).then((url) => {
+                const clothingDao = new ClothingDao();
+                clothingDao.update(key, {
+                    image: url,
+                }).then(() => navigation.goBack());
+            });
         } else {
-            navigation.goBack()
+            navigation.goBack();
         }
     }
 
@@ -173,7 +167,7 @@ const ClothingUpdateImage = ({ route, navigation }) => {
             </View>
         </View>
     );
-}
+};
 
 const componentStyles = StyleSheet.create({
     ContainerImage: {

@@ -4,13 +4,13 @@ import SignupStep1 from '../../components/SignupStep1';
 import SignupStep2 from '../../components/SignupStep2';
 import SignupStep3 from '../../components/SignupStep3';
 import SignupStep4 from '../../components/SignupStep4';
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
+import { AuthService } from '../../services/AuthService';
 
 import styles from '../../../assets/styles/style.js';
 
 import ChevronLeftOrange from './../../../assets/images/chevron-left-orange.svg';
 import TimesOrange from './../../../assets/images/times-orange.svg';
+import { StorageService } from '../../services/StorageService';
 
 const Signup = ({ navigation }) => {
 
@@ -43,7 +43,7 @@ const Signup = ({ navigation }) => {
           <ChevronLeftOrange width={25} height={25} />
         </TouchableOpacity>
 
-    )
+    );
   };
 
   const HeaderRight = () => {
@@ -56,7 +56,7 @@ const Signup = ({ navigation }) => {
         </TouchableOpacity>
         : null
 
-    )
+    );
   };
 
   const nextStep = () => {
@@ -85,10 +85,10 @@ const Signup = ({ navigation }) => {
 
       /** Call Your API */
     } else {
-      setEmailErrorMessage("")
-      nextStep()
+      setEmailErrorMessage("");
+      nextStep();
     }
-  }
+  };
 
   passwordValidation = async () => {
     let errorFlag = false;
@@ -118,50 +118,24 @@ const Signup = ({ navigation }) => {
 
       /** Call Your API */
     } else {
-      setPasswordErrorMessage("")
-      setConfirmPasswordErrorMessage("")
-      registerUser()
+      setPasswordErrorMessage("");
+      setConfirmPasswordErrorMessage("");
+      registerUser();
     }
-  }
+  };
 
   registerUser = () => {
+    const authService = new AuthService();
     if (imageUri !== '') {
-      storage()
-        .ref(imageName)
-        .putFile(imageUri)
-        .then(() => {
-          storage().ref('/' + imageName).getDownloadURL().then((url) => {
-            setIsLoading(true)
-            auth()
-              .createUserWithEmailAndPassword(email, password)
-              .then((res) => {
-                res.user.updateProfile({
-                  displayName: firstname + ' ' + lastname,
-                  photoURL: url
-                })
-                console.log(res)
-                console.log('User registered successfully!')
-                setIsLoading(false)
-              })
-              .catch(error => console.log('errorMessage:', error.message))
-          })
-        })
-        .catch((e) => console.log('uploading image error => ', e));
+      new StorageService().uploadAndGetUrl(imageName, imageUri).then((photoURL) => {
+        setIsLoading(true);
+        return authService.signUp({ email, password, firstname, lastname, photoURL });
+      });
     } else {
-      auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then((res) => {
-          res.user.updateProfile({
-            displayName: firstname + ' ' + lastname,
-          })
-          console.log(res)
-          console.log('User registered successfully!')
-          setIsLoading(false)
-        })
-        .catch(error => console.log('errorMessage:', error.message))
+      authService.signUp({ email, password, firstname, lastname });
     }
 
-  }
+  };
 
   const updateHeader = () => {
     return (
@@ -173,8 +147,8 @@ const Signup = ({ navigation }) => {
           <HeaderRight />
         )
       })
-    )
-  }
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -220,7 +194,7 @@ const Signup = ({ navigation }) => {
       }
     </View>
   );
-}
+};
 
 const viewStyles = StyleSheet.create({
   preloader: {
@@ -233,6 +207,6 @@ const viewStyles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#F0F1F1'
   }
-})
+});
 
 export default Signup;

@@ -4,8 +4,8 @@ import ClothingAddStep1 from '../../components/ClothingAddStep1';
 import ClothingAddStep2 from '../../components/ClothingAddStep2';
 import ClothingAddStep3 from '../../components/ClothingAddStep3';
 import { ClothingDao } from '../../dao/ClothingDao';
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
+import { AuthService } from '../../services/AuthService';
+import { StorageService } from '../../services/StorageService';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -14,8 +14,9 @@ import TimesOrange from './../../../assets/images/times-orange.svg';
 
 const ClothingAdd = ({ navigation }) => {
 
+    const userId = new AuthService().getUser().uid;
     const [values, setValues] = useState({
-        userId: auth().currentUser.uid,
+        userId: userId,
         imageUrl: "",
         imageName: "",
         imageUri: "",
@@ -45,7 +46,7 @@ const ClothingAdd = ({ navigation }) => {
                     <Text style={styles.CancelText}>Annuler</Text>
                 </TouchableOpacity>
 
-        )
+        );
     };
 
     const HeaderRight = () => {
@@ -58,7 +59,7 @@ const ClothingAdd = ({ navigation }) => {
                 </TouchableOpacity>
                 : null
 
-        )
+        );
     };
 
     const nextStep = () => {
@@ -82,26 +83,20 @@ const ClothingAdd = ({ navigation }) => {
     };
 
     function addItem() {
-        storage()
-            .ref(values.imageName)
-            .putFile(values.imageUri)
-            .then(() => {
-                storage().ref('/' + values.imageName).getDownloadURL().then((url) => {
-                    const clothingDao = new ClothingDao();
-                    clothingDao.push({
-                        userId: values.userId,
-                        image: url,
-                        type: values.type,
-                        color: values.color,
-                        season: values.season,
-                        size: values.size,
-                        status: values.status,
-                        fit: values.fit,
-                        rate: values.rate,
-                    })
-                })
-            }).then(() => navigation.navigate('ClothingList'))
-            .catch((e) => console.log('uploading image error => ', e));
+        new StorageService().uploadAndGetUrl(imageName, imageUri).then((url) => {
+            const clothingDao = new ClothingDao();
+            clothingDao.push({
+                userId: values.userId,
+                image: url,
+                type: values.type,
+                color: values.color,
+                season: values.season,
+                size: values.size,
+                status: values.status,
+                fit: values.fit,
+                rate: values.rate,
+            });
+        }).then(() => navigation.navigate('ClothingList'));
     }
 
     const updateHeader = () => {
@@ -114,8 +109,8 @@ const ClothingAdd = ({ navigation }) => {
                     <HeaderRight />
                 )
             })
-        )
-    }
+        );
+    };
 
     return (
         <ScrollView style={styles.ContainerView}>
@@ -142,5 +137,5 @@ const ClothingAdd = ({ navigation }) => {
         </ScrollView>
     );
 
-}
+};
 export default ClothingAdd;

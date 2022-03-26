@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
 import { useIsFocused } from "@react-navigation/native";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { AuthService } from '../../services/AuthService.js';
+import { StorageService } from '../../services/StorageService.js';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -16,6 +16,7 @@ import TimesDark from '../../../assets/images/times-dark.svg';
 const AccountUpdate = ({ navigation }) => {
 
     const isFocused = useIsFocused();
+    const authService = new AuthService();
     const [firstname, onChangeFirstname] = useState('');
     const [lastname, onChangeLastname] = useState('');
     const [imageUri, setImageUri] = useState('');
@@ -24,12 +25,12 @@ const AccountUpdate = ({ navigation }) => {
 
     useEffect(() => {
 
-        if (isFocused && auth().currentUser.displayName) {
-            const getLastname = auth().currentUser.displayName.replace(/[\[\]?.,\/#!$%\^&\*;:{}=\\|_~()]/g, "").split(" ");
+        if (isFocused && authService.getUser().displayName) {
+            const getLastname = authService.getUser().displayName.replace(/[\[\]?.,\/#!$%\^&\*;:{}=\\|_~()]/g, "").split(" ");
             const userLastname = getLastname[getLastname.length - 1];
             onChangeLastname(userLastname);
-            onChangeFirstname(auth().currentUser.displayName.replace(/ .*/, ''));
-            setImageUri(auth().currentUser.photoURL)
+            onChangeFirstname(authService.getUser().displayName.replace(/ .*/, ''));
+            setImageUri(authService.getUser().photoURL);
         }
 
     }, [isFocused]);
@@ -56,7 +57,7 @@ const AccountUpdate = ({ navigation }) => {
                 setImageName(imageName);
             }
         });
-    }
+    };
 
     const selectImage = () => {
         const options = {
@@ -88,40 +89,20 @@ const AccountUpdate = ({ navigation }) => {
         setModalVisible(false);
         setImageUri(null);
         setImageName(null);
-    }
+    };
 
     editUser = () => {
 
-        if ((imageUri !== auth().currentUser.photoURL) && (imageUri !== null)) {
-            storage()
-                .ref(imageName)
-                .putFile(imageUri)
-                .then(() => {
-                    storage().ref('/' + imageName).getDownloadURL().then((url) => {
-                        auth()
-                            .currentUser.updateProfile({
-                                displayName: firstname + ' ' + lastname,
-                                photoURL: url
-                            }).then(() => navigation.goBack())
-                            .catch(error => console.log('errorMessage:', error.message))
-                    })
-                })
-                .catch((e) => console.log('uploading image error => ', e));
-        } else if (imageUri == auth().currentUser.photoURL) {
-            auth()
-                .currentUser.updateProfile({
-                    displayName: firstname + ' ' + lastname,
-                }).then(() => navigation.goBack())
-                .catch(error => console.log('errorMessage:', error.message))
+        if ((imageUri !== authService.getUser().photoURL) && (imageUri !== null)) {
+            new StorageService().uploadAndGetUrl(imageName, imageUri).then((photoURL) => {
+                return authService.editUser({ firstname, lastname, photoURL }).then(() => navigation.goBack());
+            });
+        } else if (imageUri == authService.getUser().photoURL) {
+            return authService.editUser({ firstname, lastname }).then(() => navigation.goBack());
         } else {
-            auth()
-                .currentUser.updateProfile({
-                    displayName: firstname + ' ' + lastname,
-                    photoURL: ''
-                }).then(() => navigation.goBack())
-                .catch(error => console.log('errorMessage:', error.message))
+            return authService.editUser({ firstname, lastname, photoURL: '' }).then(() => navigation.goBack());
         }
-    }
+    };
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -238,7 +219,7 @@ const AccountUpdate = ({ navigation }) => {
             </View>
         </View>
     );
-}
+};
 
 const viewStyles = StyleSheet.create({
     buttonCamera: {

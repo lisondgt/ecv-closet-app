@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
-import auth from '@react-native-firebase/auth';
+import { AuthService } from '../../services/AuthService';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -11,6 +11,7 @@ import ChevronRightGrey from '../../../assets/images/chevron-right-grey.svg';
 
 const Account = ({ navigation }) => {
 
+  const authService = new AuthService();
   const isFocused = useIsFocused();
   const [user, setUser] = useState({
     displayName: '',
@@ -22,14 +23,9 @@ const Account = ({ navigation }) => {
 
     if (isFocused) {
       setUser({
-        displayName: auth().currentUser.displayName,
-        photoURL: auth().currentUser.photoURL,
-        uid: auth().currentUser.uid
-      })
-      const userOk = auth().currentUser;
-
-      userOk.providerData.forEach((userInfo) => {
-        console.log('User info for provider: ', userInfo);
+        displayName: authService.getUser().displayName,
+        photoURL: authService.getUser().photoURL,
+        uid: authService.getUser().uid
       });
     }
 
@@ -50,9 +46,8 @@ const Account = ({ navigation }) => {
     );
 
   signOut = () => {
-    auth().signOut()
-      .catch(error => setUser({ errorMessage: error.message }))
-  }
+    authService.signOut();
+  };
 
   const deleteAccountAlert = () =>
     Alert.alert(
@@ -69,9 +64,8 @@ const Account = ({ navigation }) => {
     );
 
   deleteAccount = () => {
-    auth().currentUser.delete()
-      .catch(error => setUser({ errorMessage: error.message }))
-  }
+    authService.accountRemove();
+  };
 
   return (
     <View style={styles.ContainerView}>
@@ -158,7 +152,7 @@ const Account = ({ navigation }) => {
       </View>
     </View>
   );
-}
+};
 
 const viewStyles = StyleSheet.create({
   Username: {

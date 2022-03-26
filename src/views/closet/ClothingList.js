@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, SectionList, FlatList, Image } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { ClothingDao } from './../../dao/ClothingDao';
-import auth from '@react-native-firebase/auth';
+import { AuthService } from '../../services/AuthService';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -10,7 +10,7 @@ import IconPlusWhite from './../../../assets/images/icon-plus-white.svg';
 
 const ClothingList = ({ navigation }) => {
 
-  const currentUserId = auth().currentUser.uid;
+  const currentUserId = new AuthService().getUser().uid;
   const isFocused = useIsFocused();
   const [clothingTops, setClothingTops] = useState([]);
   const [clothingBottoms, setClothingBottoms] = useState([]);
@@ -107,7 +107,7 @@ const ClothingList = ({ navigation }) => {
         },
       ],
     },
-  ]
+  ];
 
   const renderEmptyContainer = () => {
     return (
@@ -141,16 +141,16 @@ const ClothingList = ({ navigation }) => {
           ListEmptyComponent={renderEmptyContainer}
         />
       </View>
-    )
-  }
+    );
+  };
 
   renderSectionHeader = ({ section }) => {
     return (
       <View style={styles.HeaderH3Clothing}>
         <Text style={styles.H3Title}>{section.title} <Text style={styles.H3Subtitle}>({section.count})</Text></Text>
       </View>
-    )
-  }
+    );
+  };
 
   renderListItem = ({ item }) => {
     return (
@@ -170,12 +170,12 @@ const ClothingList = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-    )
-  }
+    );
+  };
 
   keyExtractor = (item) => {
-    return item.name
-  }
+    return item.name;
+  };
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -201,7 +201,7 @@ const ClothingList = ({ navigation }) => {
       />
     </View>
   );
-}
+};
 
 export default ClothingList;
 

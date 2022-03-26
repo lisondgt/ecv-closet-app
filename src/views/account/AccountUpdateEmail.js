@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
-import auth from '@react-native-firebase/auth';
+import { AuthService } from '../../services/AuthService.js';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -8,44 +8,35 @@ import ChevronLeftOrange from '../../../assets/images/chevron-left-orange.svg';
 
 const AccountUpdateEmail = ({ navigation }) => {
 
+    const authService = new AuthService();
     const [password, onChangePassword] = useState('');
-    const [email, onChangeEmail] = useState(auth().currentUser.email);
+    const [email, onChangeEmail] = useState(authService.getUser().email);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
     emailValidation = async () => {
         let errorFlag = false;
-    
+
         // input validation
         if (email.length == 0) {
-          errorFlag = true;
-          setEmailErrorMessage("L'email est requis");
+            errorFlag = true;
+            setEmailErrorMessage("L'email est requis");
         }
-    
-        if (errorFlag) {
-          console.log("errorFlag");
-    
-          /** Call Your API */
-        } else {
-          setEmailErrorMessage("")
-          changeEmail()
-        }
-      }
 
-    const reauthenticate = () => {
-        var user = auth().currentUser;
-        var cred = auth.EmailAuthProvider.credential(
-            user.email, password);
-        return user.reauthenticateWithCredential(cred);
-    }
+        if (errorFlag) {
+            console.log("errorFlag");
+
+            /** Call Your API */
+        } else {
+            setEmailErrorMessage("");
+            changeEmail();
+        }
+    };
 
     const changeEmail = () => {
-        reauthenticate(password).then(() => {
-            auth().currentUser.updateEmail(email).then(() => {
-                console.log("Email updated!");
-            }).catch((error) => { console.log(error); });
-        }).then(() => navigation.goBack())
-            .catch((error) => { console.log(error); });
-    }
+        authService.reauthenticate(password).then(() => {
+            authService.changeEmail(email);
+        }).then(() => navigation.goBack());
+    };
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -99,7 +90,7 @@ const AccountUpdateEmail = ({ navigation }) => {
             </View>
         </View>
     );
-}
+};
 
 const viewStyles = StyleSheet.create({
 });

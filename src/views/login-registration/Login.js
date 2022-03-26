@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, StyleSheet, Alert } from 'react-native';
-import auth from '@react-native-firebase/auth';
+import { AuthService } from '../../services/AuthService';
 
 import styles from '../../../assets/styles/style.js';
 
@@ -26,22 +26,9 @@ const Login = ({ navigation }) => {
       Alert.alert('Enter details to signin!')
     } else {
       setIsLoading(true)
-      auth()
-        .signInWithEmailAndPassword(values.email, values.password)
-        .then((res) => {
-          res.user.updateProfile({
-            name: values.name
-          })
-          console.log(res)
-          console.log('User logged-in successfully!')
-          setIsLoading(false)
-          setValues({
-            email: '',
-            password: ''
-          })
-          navigation.navigate('ClosetTabs')
-        })
-        .catch(error => this.setState({ errorMessage: error.message }))
+      new AuthService().signIn(values.email, values.password).then(() => {
+        setIsLoading(false)
+      })
     }
   }
 
