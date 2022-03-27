@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import Preloader from '../../components/Preloader';
 import { AuthService } from '../../services/AuthService';
 
 import styles from '../../../assets/styles/style.js';
@@ -19,18 +20,16 @@ const Login = ({ navigation }) => {
     const state = values;
     state[name] = value;
     setValues(state);
-  }
+  };
 
   userLogin = () => {
     if (values.email === '' && values.password === '') {
-      Alert.alert('Enter details to signin!')
+      Alert.alert('Enter details to signin!');
     } else {
-      setIsLoading(true)
-      new AuthService().signIn(values.email, values.password).then(() => {
-        setIsLoading(false)
-      })
+      setIsLoading(true);
+      new AuthService().signIn(values.email, values.password).then(() => setIsLoading(false));
     }
-  }
+  };
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -47,12 +46,6 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.ContainerView}>
-      {isLoading === true ?
-        <View style={viewStyles.preloader}>
-          <ActivityIndicator size="large" color="#9E9E9E" />
-        </View>
-        : null
-      }
       <Text style={styles.H2TitleCenter}>Content de te revoir !</Text>
       <View style={styles.MarginBottom20}>
         <View style={styles.MarginBottom10}>
@@ -87,21 +80,12 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      {isLoading === true ?
+        <Preloader />
+        : null
+      }
     </View>
   );
-}
-
-const viewStyles = StyleSheet.create({
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F0F1F1'
-  }
-})
+};
 
 export default Login;

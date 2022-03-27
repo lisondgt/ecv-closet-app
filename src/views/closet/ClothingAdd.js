@@ -65,8 +65,6 @@ const ClothingAdd = ({ navigation }) => {
     const nextStep = () => {
         if (step < 3) {
             setStep(step + 1);
-        } else if (step === 3) {
-            console.log(values);
         }
     };
 
@@ -83,7 +81,7 @@ const ClothingAdd = ({ navigation }) => {
     };
 
     function addItem() {
-        new StorageService().uploadAndGetUrl(imageName, imageUri).then((url) => {
+        new StorageService().uploadAndGetUrl(values.imageName, values.imageUri).then((url) => {
             const clothingDao = new ClothingDao();
             clothingDao.push({
                 userId: values.userId,

@@ -4,8 +4,8 @@ export class StorageService {
     async update() {
         try {
 
-        } catch (error) {
-            console.error('message error :', error);
+        } catch (err) {
+            console.error('[StorageService][update]', err);
         }
     }
 
@@ -13,32 +13,32 @@ export class StorageService {
         try {
             await this.upload(name, uri);
             return this.getUrl(name);
-        } catch (error) {
-            console.error('message error :', error);
+        } catch (err) {
+            console.error('[StorageService][uploadAndGetUrl]', err);
         }
     }
 
     async upload(name, uri) {
         try {
             await storage().ref(name).putFile(uri);
-        } catch (error) {
-            console.error('message error :', error);
+        } catch (err) {
+            console.error('[StorageService][upload]', err);
         }
     }
 
     async getUrl(name) {
         try {
             return storage().ref('/' + name).getDownloadURL();
-        } catch (error) {
-            console.error('message error :', error);
+        } catch (err) {
+            console.error('[StorageService][getUrl]', err);
         }
     }
 
     async remove() {
         try {
 
-        } catch (error) {
-            console.error('message error :', error);
+        } catch (err) {
+            console.error('[StorageService][remove]', err);
         }
     }
 }

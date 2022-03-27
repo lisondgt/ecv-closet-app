@@ -23,7 +23,7 @@ export default function RatingStarsButton({ maxRating, onSelect, ItemValue }) {
 
     return (
         <View style={styles.ContainerRatingButton}>
-            {maxRating.map((item, key) => {
+            {maxRating.map((item) => {
                 return (
                     <TouchableOpacity
                         style={styles.RatingButton}

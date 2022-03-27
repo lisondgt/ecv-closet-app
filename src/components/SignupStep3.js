@@ -1,73 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ImageLibrary from './ImageLibrary.js';
+import CameraLaunch from './CameraLaunch.js';
 
 import styles from '../../assets/styles/style.js';
 
 import CameraGrey from '../../assets/images/camera-grey.svg';
-import CameraWhite from '../../assets/images/camera-white.svg';
-import ImageWhite from '../../assets/images/image-white.svg';
 import TimesDark from '../../assets/images/times-dark.svg';
 
-export default function SignupStep3({ imageUri, setImageUri, imageName, setImageName, nextStep }) {
+export default function SignupStep3({ imageUri, setImageUri, setImageName, nextStep }) {
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const cameraLaunch = () => {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-        launchCamera(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.errorMessage) {
-                console.log('ImagePicker Error: ', response.errorMessage);
-            } else {
-                setModalVisible(false);
-                const imageUri = response.assets.map(item => item.uri).toString();
-                const imageName = response.assets.map(item => item.fileName).toString();
-                setImageUri(imageUri);
-                setImageName(imageName);
-            }
-        });
-    }
-
-    const selectImage = () => {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-        launchImageLibrary(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                setModalVisible(false);
-                const imageUri = response.assets.map(item => item.uri).toString();
-                const imageName = response.assets.map(item => item.fileName).toString();
-                setImageUri(imageUri);
-                setImageName(imageName);
-            }
-        });
-    };
-
     const deleteImage = () => {
         setModalVisible(false);
-        setImageUri('');
+        setImageUri(null);
         setImageName('');
-    }
+    };
 
     return (
         <View style={styles.ContainerView}>
@@ -93,20 +42,10 @@ export default function SignupStep3({ imageUri, setImageUri, imageName, setImage
                             </TouchableOpacity>
                         </View>
                         <View style={styles.MarginBottom10}>
-                            <TouchableOpacity
-                                onPress={cameraLaunch}
-                                style={styles.PrimaryButtonIcon}>
-                                <CameraWhite style={styles.PrimaryButtonIconIcon} />
-                                <Text style={styles.PrimaryButtonIconText}>Caméra</Text>
-                            </TouchableOpacity>
+                            <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                         </View>
                         <View style={styles.MarginBottom20}>
-                            <TouchableOpacity
-                                onPress={selectImage}
-                                style={styles.PrimaryButtonIcon}>
-                                <ImageWhite style={styles.PrimaryButtonIconIcon} />
-                                <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
-                            </TouchableOpacity>
+                            <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                         </View>
                         {imageUri !== "" ? (
                             <TouchableOpacity

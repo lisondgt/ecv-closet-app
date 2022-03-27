@@ -12,10 +12,11 @@ import ChevronRightGrey from '../../../assets/images/chevron-right-grey.svg';
 const Account = ({ navigation }) => {
 
   const authService = new AuthService();
+  const currentUser = authService.getUser();
   const isFocused = useIsFocused();
   const [user, setUser] = useState({
     displayName: '',
-    photoURL: '',
+    photoURL: null,
     uid: '',
   });
 
@@ -23,9 +24,9 @@ const Account = ({ navigation }) => {
 
     if (isFocused) {
       setUser({
-        displayName: authService.getUser().displayName,
-        photoURL: authService.getUser().photoURL,
-        uid: authService.getUser().uid
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+        uid: currentUser.uid
       });
     }
 
@@ -147,7 +148,6 @@ const Account = ({ navigation }) => {
               </View>
             </View>
           </TouchableOpacity>
-          <Text>{user.uid}</Text>
         </View>
       </View>
     </View>

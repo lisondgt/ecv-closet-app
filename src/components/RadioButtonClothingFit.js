@@ -55,7 +55,8 @@ export default function RadioButtonClothingFit({ onSelect, ItemValue }) {
                     ];
                 });
             },
-            setDefaultRadio(value)
+            setDefaultRadio(value),
+            selectHandler(value)
         );
     };
 
@@ -118,6 +119,5 @@ export default function RadioButtonClothingFit({ onSelect, ItemValue }) {
                 <PlusDark width={10} height={10} />
             </TouchableOpacity>
         </View>
-
     );
 }

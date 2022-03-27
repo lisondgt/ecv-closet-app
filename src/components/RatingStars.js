@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View } from 'react-native';
-import { useIsFocused } from "@react-navigation/native";
 
 import styles from '../../assets/styles/style.js';
 
@@ -12,7 +11,7 @@ export default function RatingStars({ maxRating, RateValue }) {
 
     return (
         <View style={styles.ContainerRating}>
-            {maxRating.map((item, key) => {
+            {maxRating.map((item) => {
                 return (
                     <View
                         style={styles.RatingStars}

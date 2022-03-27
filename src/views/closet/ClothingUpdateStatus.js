@@ -16,7 +16,7 @@ const ClothingUpdateStatus = ({ route, navigation }) => {
     const clothingDao = new ClothingDao();
     clothingDao.update(key, {
       status: option,
-    }).then(() => navigation.goBack())
+    }).then(() => navigation.goBack());
   }
 
   React.useLayoutEffect(() => {
@@ -45,5 +45,5 @@ const ClothingUpdateStatus = ({ route, navigation }) => {
       </View>
     </View>
   );
-}
+};
 export default ClothingUpdateStatus;

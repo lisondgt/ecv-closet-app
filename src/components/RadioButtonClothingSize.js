@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View, Modal, TextInput } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { ClothingSizeDao } from '../dao/ClothingSizeDao';
+import { AuthService } from '../services/AuthService';
 
 import styles from '../../assets/styles/style.js';
 
@@ -10,6 +11,7 @@ import PlusDark from './../../assets/images/plus-dark.svg';
 export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
 
     const isFocused = useIsFocused();
+    const userId = new AuthService().getUser().uid;
     const [data, setData] = useState([]);
     const [defaultRadio, setDefaultRadio] = useState(ItemValue);
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +21,7 @@ export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
 
         if (isFocused) {
             const clothingSizeDao = new ClothingSizeDao();
-            clothingSizeDao.fetchAll().then(setData);
+            clothingSizeDao.fetchAllByUserId(userId).then(setData);
         }
 
     }, []);
@@ -40,7 +42,7 @@ export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
 
     const submitHandler = (value) => {
         const clothingSizeDao = new ClothingSizeDao();
-        clothingSizeDao.push({ value }).then(
+        clothingSizeDao.push({ value, userId }).then(
             (key) => {
                 setData((prevData) => {
                     return [
@@ -48,11 +50,13 @@ export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
                         {
                             value,
                             key,
+                            userId,
                         },
                     ];
                 });
             },
-            setDefaultRadio(value)
+            setDefaultRadio(value),
+            selectHandler(value)
         );
     };
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import Preloader from '../../components/Preloader';
 import { AuthService } from '../../services/AuthService.js';
 
 import styles from '../../../assets/styles/style.js';
@@ -9,6 +10,7 @@ import ChevronLeftOrange from '../../../assets/images/chevron-left-orange.svg';
 const AccountUpdatePassword = ({ navigation }) => {
 
     const authService = new AuthService();
+    const [isLoading, setIsLoading] = useState(false);
     const [currentPassword, onChangeCurrentPassword] = useState('');
     const [newPassword, onChangeNewPassword] = useState('');
     const [newPasswordErrorMessage, setNewPasswordErrorMessage] = useState('');
@@ -50,9 +52,12 @@ const AccountUpdatePassword = ({ navigation }) => {
     };
 
     const changePassword = () => {
+        setIsLoading(true);
         authService.reauthenticate(currentPassword).then(() => {
             authService.changePassword(newPassword);
-        }).then(() => navigation.goBack());
+        })
+            .then(() => setIsLoading(false))
+            .then(() => navigation.goBack());
     };
 
     React.useLayoutEffect(() => {
@@ -116,11 +121,12 @@ const AccountUpdatePassword = ({ navigation }) => {
                     <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                 </TouchableOpacity>
             </View>
+            {isLoading === true ?
+                <Preloader />
+                : null
+            }
         </View>
     );
 };
-
-const viewStyles = StyleSheet.create({
-});
 
 export default AccountUpdatePassword;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import Preloader from '../../components/Preloader';
 import SignupStep1 from '../../components/SignupStep1';
 import SignupStep2 from '../../components/SignupStep2';
 import SignupStep3 from '../../components/SignupStep3';
@@ -18,7 +19,7 @@ const Signup = ({ navigation }) => {
   const [lastname, onChangeLastname] = useState('');
   const [email, onChangeEmail] = useState('');
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [imageUri, setImageUri] = useState('');
+  const [imageUri, setImageUri] = useState(null);
   const [imageName, setImageName] = useState('');
   const [password, onChangePassword] = useState('');
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
@@ -129,10 +130,15 @@ const Signup = ({ navigation }) => {
     if (imageUri !== '') {
       new StorageService().uploadAndGetUrl(imageName, imageUri).then((photoURL) => {
         setIsLoading(true);
-        return authService.signUp({ email, password, firstname, lastname, photoURL });
+        return authService.signUp({ email, password, firstname, lastname, photoURL }).then(() => {
+          setIsLoading(false);
+        });
       });
     } else {
-      authService.signUp({ email, password, firstname, lastname });
+      setIsLoading(true);
+      authService.signUp({ email, password, firstname, lastname }).then(() => {
+        setIsLoading(false);
+      });
     }
 
   };
@@ -153,12 +159,6 @@ const Signup = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       {updateHeader()}
-      {isLoading === true ?
-        <View style={viewStyles.preloader}>
-          <ActivityIndicator size="large" color="#9E9E9E" />
-        </View>
-        : null
-      }
       {
         {
           1: <SignupStep1
@@ -192,21 +192,12 @@ const Signup = ({ navigation }) => {
           />,
         }[step]
       }
+      {isLoading === true ?
+        <Preloader />
+        : null
+      }
     </View>
   );
 };
-
-const viewStyles = StyleSheet.create({
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F0F1F1'
-  }
-});
 
 export default Signup;

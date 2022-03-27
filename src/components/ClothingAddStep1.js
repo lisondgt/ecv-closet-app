@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet, Modal } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ImageLibrary from './ImageLibrary.js';
+import CameraLaunch from './CameraLaunch.js';
 
 import styles from '../../assets/styles/style.js';
 
 import CameraWhite from '../../assets/images/camera-white.svg';
-import ImageWhite from '../../assets/images/image-white.svg';
 import PencilWhite from '../../assets/images/pencil-alt-white.svg';
 import TimesDark from '../../assets/images/times-dark.svg';
 
@@ -15,61 +15,11 @@ export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
     const [imageName, setImageName] = useState(values.imageName);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const cameraLaunch = () => {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-        launchCamera(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.errorMessage) {
-                console.log('ImagePicker Error: ', response.errorMessage);
-            } else {
-                setModalVisible(false);
-                const imageUri = response.assets.map(item => item.uri).toString();
-                const imageName = response.assets.map(item => item.fileName).toString();
-                setImageUri(imageUri);
-                setImageName(imageName);
-            }
-        });
-    }
-
-    const selectImage = () => {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-        launchImageLibrary(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                setModalVisible(false);
-                const imageUri = response.assets.map(item => item.uri).toString();
-                const imageName = response.assets.map(item => item.fileName).toString();
-                setImageUri(imageUri);
-                setImageName(imageName);
-            }
-        });
-    };
-
     const saveImage = () => {
         selectHandler(imageName, 'imageName');
         selectHandler(imageUri, 'imageUri');
         nextStep();
-    }
+    };
 
     return (
         <View>
@@ -95,20 +45,10 @@ export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.MarginBottom10}>
-                            <TouchableOpacity
-                                onPress={cameraLaunch}
-                                style={styles.PrimaryButtonIcon}>
-                                <CameraWhite style={styles.PrimaryButtonIconIcon} />
-                                <Text style={styles.PrimaryButtonIconText}>Caméra</Text>
-                            </TouchableOpacity>
+                            <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                         </View>
                         <View style={styles.MarginBottom10}>
-                            <TouchableOpacity
-                                onPress={selectImage}
-                                style={styles.PrimaryButtonIcon}>
-                                <ImageWhite style={styles.PrimaryButtonIconIcon} />
-                                <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
-                            </TouchableOpacity>
+                            <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                         </View>
                     </View>
                 </View>
@@ -144,19 +84,9 @@ export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
             ) : (
                 <View>
                     <View style={styles.MarginBottom10}>
-                        <TouchableOpacity
-                            onPress={cameraLaunch}
-                            style={styles.PrimaryButtonIcon}>
-                            <CameraWhite style={styles.PrimaryButtonIconIcon} />
-                            <Text style={styles.PrimaryButtonIconText}>Caméra</Text>
-                        </TouchableOpacity>
+                        <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                     </View>
-                    <TouchableOpacity
-                        onPress={selectImage}
-                        style={styles.PrimaryButtonIcon}>
-                        <ImageWhite style={styles.PrimaryButtonIconIcon} />
-                        <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
-                    </TouchableOpacity>
+                    <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                 </View>
             )}
         </View>

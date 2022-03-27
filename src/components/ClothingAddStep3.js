@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useIsFocused } from "@react-navigation/native";
 import RadioButtonClothingColor from '../components/RadioButtonClothingColor';
 import RadioButtonClothingSeason from '../components/RadioButtonClothingSeason';
 import RadioButtonClothingSize from '../components/RadioButtonClothingSize';
@@ -30,15 +29,7 @@ export default function ClothingAddStep3({ values, selectHandler }) {
         },
     ];
 
-    const isFocused = useIsFocused();
-    const [imageUrl, setImageUrl] = useState(undefined);
-    const [color, setColor] = useState('');
-    const [season, setSeason] = useState('');
-    const [size, setSize] = useState('');
-    const [status, setStatus] = useState('');
-    const [fit, setFit] = useState('');
-    const [maxRating, setMaxRating] = useState(RatingData);
-    const [rate, setRating] = useState('');
+    const maxRating = RatingData;
 
     return (
         <View>
@@ -49,27 +40,27 @@ export default function ClothingAddStep3({ values, selectHandler }) {
             />
             <View style={viewStyles.marginBottom}>
                 <Text style={styles.H3Title}>Couleur principale</Text>
-                <RadioButtonClothingColor ItemValue={values.color} onSelect={(value) => { setColor(value); selectHandler(value, 'color') }} />
+                <RadioButtonClothingColor ItemValue={values.color} onSelect={(value) => { selectHandler(value, 'color'); }} />
             </View>
             <View style={viewStyles.marginBottom}>
                 <Text style={styles.H3Title}>Saison</Text>
-                <RadioButtonClothingSeason ItemValue={values.season} onSelect={(value) => { setSeason(value); selectHandler(value, 'season') }} />
+                <RadioButtonClothingSeason ItemValue={values.season} onSelect={(value) => { selectHandler(value, 'season'); }} />
             </View>
             <View style={viewStyles.marginBottom}>
                 <Text style={styles.H3Title}>Taille</Text>
-                <RadioButtonClothingSize ItemValue={values.size} onSelect={(value) => { setSize(value); selectHandler(value, 'size') }} />
+                <RadioButtonClothingSize ItemValue={values.size} onSelect={(value) => { selectHandler(value, 'size'); }} />
             </View>
             <View style={viewStyles.marginBottom}>
                 <Text style={styles.H3Title}>Statut</Text>
-                <RadioButtonClothingStatus ItemValue={values.status} onSelect={(value) => { setStatus(value); selectHandler(value, 'status') }} />
+                <RadioButtonClothingStatus ItemValue={values.status} onSelect={(value) => { selectHandler(value, 'status'); }} />
             </View>
             <View style={viewStyles.marginBottom}>
                 <Text style={styles.H3Title}>État</Text>
-                <RadioButtonClothingFit ItemValue={values.fit} onSelect={(value) => { setFit(value); selectHandler(value, 'fit') }} />
+                <RadioButtonClothingFit ItemValue={values.fit} onSelect={(value) => { selectHandler(value, 'fit'); }} />
             </View>
             <View>
                 <Text style={styles.H3Title}>Note</Text>
-                <RatingStarsButton ItemValue={values.rate} maxRating={maxRating} onSelect={(value) => { setRating(value); selectHandler(value, 'rate') }} />
+                <RatingStarsButton ItemValue={values.rate} maxRating={maxRating} onSelect={(value) => { selectHandler(value, 'rate'); }} />
             </View>
         </View>
     );

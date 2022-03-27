@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import styles from '../../assets/styles/style.js';
 
@@ -42,6 +42,3 @@ export default function SignupStep1({ firstname, onChangeFirstname, lastname, on
         </View>
     );
 }
-
-const componentStyles = StyleSheet.create({
-});

@@ -10,8 +10,8 @@ export class AuthService {
                 photoURL
             });
             console.log('User registered successfully!');
-        } catch (error) {
-            console.error('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][signUp]', err);
         }
     }
 
@@ -19,8 +19,8 @@ export class AuthService {
         try {
             await auth().signInWithEmailAndPassword(email, password);
             console.log('User logged-in successfully!');
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][signIn]', err);
         }
 
     }
@@ -40,8 +40,8 @@ export class AuthService {
                     displayName: firstname + ' ' + lastname,
                     photoURL
                 });
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][editUser]', err);
         }
     }
 
@@ -51,8 +51,8 @@ export class AuthService {
             var cred = auth.EmailAuthProvider.credential(
                 user.email, password);
             return user.reauthenticateWithCredential(cred);
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][reauthenticate]', err);
         }
     }
 
@@ -60,8 +60,8 @@ export class AuthService {
         try {
             await auth().currentUser.updateEmail(email);
             console.log("Email updated!");
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][changeEmail]', err);
         }
     }
 
@@ -69,24 +69,24 @@ export class AuthService {
         try {
             await auth().currentUser.updatePassword(newPassword);
             console.log("Password updated!");
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][changePassword]', err);
         }
     }
 
     async signOut() {
         try {
             await auth().signOut();
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][signOut]', err);
         }
     }
 
     async accountRemove() {
         try {
             await auth().currentUser.delete();
-        } catch (error) {
-            console.log('errorMessage:', error.message);
+        } catch (err) {
+            console.error('[AuthService][accountRemove]', err);
         }
     }
 }

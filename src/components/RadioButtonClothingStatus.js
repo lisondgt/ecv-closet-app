@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View, Modal, TextInput } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { ClothingStatusDao } from '../dao/ClothingStatusDao';
+import { AuthService } from '../services/AuthService';
 
 import styles from '../../assets/styles/style.js';
 
@@ -10,6 +11,7 @@ import PlusDark from './../../assets/images/plus-dark.svg';
 export default function RadioButtonClothingStatus({ onSelect, ItemValue }) {
 
     const isFocused = useIsFocused();
+    const userId = new AuthService().getUser().uid;
     const [data, setData] = useState([]);
     const [defaultRadio, setDefaultRadio] = useState(ItemValue);
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +21,7 @@ export default function RadioButtonClothingStatus({ onSelect, ItemValue }) {
 
         if (isFocused) {
             const clothingStatusDao = new ClothingStatusDao();
-            clothingStatusDao.fetchAll().then(setData);
+            clothingStatusDao.fetchAllByUserId(userId).then(setData);
         }
 
     }, []);
@@ -40,7 +42,7 @@ export default function RadioButtonClothingStatus({ onSelect, ItemValue }) {
 
     const submitHandler = (value) => {
         const clothingStatusDao = new ClothingStatusDao();
-        clothingStatusDao.push({ value }).then(
+        clothingStatusDao.push({ value, userId }).then(
             (key) => {
                 setData((prevData) => {
                     return [
@@ -48,11 +50,13 @@ export default function RadioButtonClothingStatus({ onSelect, ItemValue }) {
                         {
                             value,
                             key,
+                            userId
                         },
                     ];
                 });
             },
-            setDefaultRadio(value)
+            setDefaultRadio(value),
+            selectHandler(value)
         );
     };
 
@@ -68,11 +72,11 @@ export default function RadioButtonClothingStatus({ onSelect, ItemValue }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.H3Title}>Ajouter une nouvelle taille</Text>
+                        <Text style={styles.H3Title}>Ajouter un nouveau statut</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={onChangeText}
-                            placeholder="Taille"
+                            placeholder="Statut"
                         />
                         <View style={styles.ContainerModalButtons}>
                             <TouchableOpacity

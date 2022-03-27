@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import styles from '../../assets/styles/style.js';
 
 export default function SignupStep4({ password, onChangePassword, passwordErrorMessage, confirmPassword, onChangeConfirmPassword, confirmPasswordErrorMessage, registerUser }) {
-
-    console.log(passwordErrorMessage);
 
     return (
         <View style={styles.ContainerView}>
@@ -48,6 +46,3 @@ export default function SignupStep4({ password, onChangePassword, passwordErrorM
         </View>
     );
 }
-
-const componentStyles = StyleSheet.create({
-});

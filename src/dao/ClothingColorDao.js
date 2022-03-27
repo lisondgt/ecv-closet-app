@@ -19,7 +19,7 @@ export class ClothingColorDao extends FirestoreDao {
 
             return [];
         } catch (err) {
-            console.error('[ClothingDao][fetchAllByType]', err);
+            console.error('[ClothingColorDao][fetchAllByUserId]', err);
 
             return null;
         }

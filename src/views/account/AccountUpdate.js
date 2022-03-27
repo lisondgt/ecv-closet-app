@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
+import Preloader from '../../components/Preloader';
+import ImageLibrary from '../../components/ImageLibrary';
+import CameraLaunch from '../../components/CameraLaunch';
 import { useIsFocused } from "@react-navigation/native";
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { AuthService } from '../../services/AuthService.js';
 import { StorageService } from '../../services/StorageService.js';
 
@@ -9,98 +11,57 @@ import styles from '../../../assets/styles/style.js';
 
 import ChevronLeftOrange from '../../../assets/images/chevron-left-orange.svg';
 import CameraGrey from '../../../assets/images/camera-grey.svg';
-import CameraWhite from '../../../assets/images/camera-white.svg';
-import ImageWhite from '../../../assets/images/image-white.svg';
 import TimesDark from '../../../assets/images/times-dark.svg';
 
 const AccountUpdate = ({ navigation }) => {
 
     const isFocused = useIsFocused();
     const authService = new AuthService();
+    const currentUser = authService.getUser();
+    const [isLoading, setIsLoading] = useState(false);
     const [firstname, onChangeFirstname] = useState('');
     const [lastname, onChangeLastname] = useState('');
-    const [imageUri, setImageUri] = useState('');
+    const [imageUri, setImageUri] = useState(null);
     const [imageName, setImageName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
 
-        if (isFocused && authService.getUser().displayName) {
-            const getLastname = authService.getUser().displayName.replace(/[\[\]?.,\/#!$%\^&\*;:{}=\\|_~()]/g, "").split(" ");
+        if (isFocused && currentUser.displayName) {
+            const getLastname = currentUser.displayName.replace(/[\[\]?.,\/#!$%\^&\*;:{}=\\|_~()]/g, "").split(" ");
             const userLastname = getLastname[getLastname.length - 1];
             onChangeLastname(userLastname);
-            onChangeFirstname(authService.getUser().displayName.replace(/ .*/, ''));
-            setImageUri(authService.getUser().photoURL);
+            onChangeFirstname(currentUser.displayName.replace(/ .*/, ''));
+            setImageUri(currentUser.photoURL);
         }
 
     }, [isFocused]);
 
-    const cameraLaunch = () => {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-        launchCamera(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.errorMessage) {
-                console.log('ImagePicker Error: ', response.errorMessage);
-            } else {
-                setModalVisible(false);
-                const imageUri = response.assets.map(item => item.uri).toString();
-                const imageName = response.assets.map(item => item.fileName).toString();
-                setImageUri(imageUri);
-                setImageName(imageName);
-            }
-        });
-    };
-
-    const selectImage = () => {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-        launchImageLibrary(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                setModalVisible(false);
-                const imageUri = response.assets.map(item => item.uri).toString();
-                const imageName = response.assets.map(item => item.fileName).toString();
-                setImageUri(imageUri);
-                setImageName(imageName);
-            }
-        });
-    };
-
     const deleteImage = () => {
         setModalVisible(false);
         setImageUri(null);
-        setImageName(null);
+        setImageName('');
     };
 
     editUser = () => {
 
-        if ((imageUri !== authService.getUser().photoURL) && (imageUri !== null)) {
+        if ((imageUri !== currentUser.photoURL) && (imageUri !== null)) {
+            setIsLoading(true);
             new StorageService().uploadAndGetUrl(imageName, imageUri).then((photoURL) => {
-                return authService.editUser({ firstname, lastname, photoURL }).then(() => navigation.goBack());
+                return authService.editUser({ firstname, lastname, photoURL })
+                    .then(() => setIsLoading(false))
+                    .then(() => navigation.goBack());
             });
-        } else if (imageUri == authService.getUser().photoURL) {
-            return authService.editUser({ firstname, lastname }).then(() => navigation.goBack());
+        } else if (imageUri == currentUser.photoURL) {
+            setIsLoading(true);
+            return authService.editUser({ firstname, lastname })
+                .then(() => setIsLoading(false))
+                .then(() => navigation.goBack());
         } else {
-            return authService.editUser({ firstname, lastname, photoURL: '' }).then(() => navigation.goBack());
+            setIsLoading(true);
+            return authService.editUser({ firstname, lastname, photoURL: '' })
+                .then(() => setIsLoading(false))
+                .then(() => navigation.goBack());
         }
     };
 
@@ -141,20 +102,10 @@ const AccountUpdate = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.MarginBottom10}>
-                            <TouchableOpacity
-                                onPress={cameraLaunch}
-                                style={styles.PrimaryButtonIcon}>
-                                <CameraWhite style={styles.PrimaryButtonIconIcon} />
-                                <Text style={styles.PrimaryButtonIconText}>Caméra</Text>
-                            </TouchableOpacity>
+                            <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                         </View>
                         <View style={styles.MarginBottom20}>
-                            <TouchableOpacity
-                                onPress={selectImage}
-                                style={styles.PrimaryButtonIcon}>
-                                <ImageWhite style={styles.PrimaryButtonIconIcon} />
-                                <Text style={styles.PrimaryButtonIconText}>Galerie de photos</Text>
-                            </TouchableOpacity>
+                            <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
                         </View>
                         {imageUri !== null ? (
                             <TouchableOpacity
@@ -217,6 +168,10 @@ const AccountUpdate = ({ navigation }) => {
                     <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                 </TouchableOpacity>
             </View>
+            {isLoading === true ?
+                <Preloader />
+                : null
+            }
         </View>
     );
 };

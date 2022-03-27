@@ -25,6 +25,7 @@ export default function RadioButtonClothingSeason({ onSelect, ItemValue }) {
     ];
 
     const [defaultRadio, setDefaultRadio] = useState(ItemValue);
+
     const selectHandler = (value) => {
         if (defaultRadio != value) {
             onSelect(value);

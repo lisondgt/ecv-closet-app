@@ -29,7 +29,7 @@ const ClothingUpdateRate = ({ route, navigation }) => {
     ];
 
     const { key, ItemValue } = route.params;
-    const [maxRating, setMaxRating] = useState(data);
+    const maxRating = data;
     const [option, setOption] = useState(ItemValue);
 
     function updateItem() {
@@ -65,5 +65,5 @@ const ClothingUpdateRate = ({ route, navigation }) => {
             </View>
         </View>
     );
-}
+};
 export default ClothingUpdateRate;

@@ -17,9 +17,6 @@ import QuestionCircleDark from './../../../assets/images/question-circle-dark.sv
 import ArrowsDark from './../../../assets/images/arrows-alt-h-dark.svg';
 import StarDark from './../../../assets/images/star-dark.svg';
 import ChevronRightGrey from './../../../assets/images/chevron-right-grey.svg';
-import CameraWhite from './../../../assets/images/camera-white.svg';
-import ImageWhite from './../../../assets/images/image-white.svg';
-
 
 const ClothingDetail = ({ route, navigation }) => {
 
@@ -43,7 +40,7 @@ const ClothingDetail = ({ route, navigation }) => {
 
     const { key } = route.params;
     const [clothingItem, setClothingItem] = useState([]);
-    const [maxRating, setMaxRating] = useState(RatingData);
+    const maxRating = RatingData;
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -57,8 +54,8 @@ const ClothingDetail = ({ route, navigation }) => {
 
     const deleteItem = () => {
         const clothingDao = new ClothingDao();
-        clothingDao.remove(key).then(() => navigation.navigate('ClothingList'))
-    }
+        clothingDao.remove(key).then(() => navigation.navigate('ClothingList'));
+    };
 
     const deteteAlert = () =>
         Alert.alert(
@@ -98,10 +95,10 @@ const ClothingDetail = ({ route, navigation }) => {
         <View style={styles.ContainerView}>
             <View style={viewStyles.ContainerImage}>
                 <TouchableOpacity
-                onPress={() => navigation.navigate('ClothingUpdateImage', {
-                    key: key,
-                    ItemValue: clothingItem.image,
-                })}>
+                    onPress={() => navigation.navigate('ClothingUpdateImage', {
+                        key: key,
+                        ItemValue: clothingItem.image,
+                    })}>
                     <View style={viewStyles.ColImage}>
                         <View style={viewStyles.ContentImage}>
                             <Image
@@ -235,7 +232,7 @@ const ClothingDetail = ({ route, navigation }) => {
             </View>
         </View>
     );
-}
+};
 
 const viewStyles = StyleSheet.create({
     ContainerImage: {
