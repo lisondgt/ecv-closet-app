@@ -289,6 +289,9 @@ export default StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
+    modalClose: {
+        marginLeft: 10
+    },
     input: {
         backgroundColor: '#FFFFFF',
         borderWidth: 1,
@@ -296,38 +299,6 @@ export default StyleSheet.create({
         borderRadius: 30,
         paddingHorizontal: 20,
         paddingVertical: 10,
-    },
-    ContainerModalButtons: {
-        marginTop: 20,
-        marginHorizontal: -5,
-        flexDirection: 'row'
-    },
-    ModalButtonCancel: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: '#DD6E42',
-        paddingVertical: 10,
-        borderRadius: 20,
-        marginHorizontal: 5,
-    },
-    ModalTextButtonCancel: {
-        fontFamily: 'Jost-Medium',
-        fontSize: 16,
-        color: '#DD6E42',
-        textAlign: 'center'
-    },
-    ModalButtonSave: {
-        flex: 1,
-        backgroundColor: '#DD6E42',
-        paddingVertical: 10,
-        borderRadius: 20,
-        marginHorizontal: 5,
-    },
-    ModalTextButtonSave: {
-        fontFamily: 'Jost-Medium',
-        fontSize: 16,
-        color: '#FFFFFF',
-        textAlign: 'center'
     },
     ContainerRatingButton: {
         borderWidth: 1,

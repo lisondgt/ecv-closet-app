@@ -35,7 +35,7 @@ const ClothingUpdateColor = ({ route, navigation }) => {
   return (
     <View style={styles.ContainerView}>
       <Text style={styles.H2Title}>Modifier la couleur principale</Text>
-        <RadioButtonClothingColor ItemValue={ItemValue} onSelect={(value) => setOption(value)} />
+      <RadioButtonClothingColor ItemValue={ItemValue} onSelect={(value) => setOption(value)} />
       <View style={styles.ContainerPrimaryButtonBottom}>
         <TouchableOpacity
           style={styles.PrimaryButton}
@@ -45,5 +45,5 @@ const ClothingUpdateColor = ({ route, navigation }) => {
       </View>
     </View>
   );
-}
+};
 export default ClothingUpdateColor;

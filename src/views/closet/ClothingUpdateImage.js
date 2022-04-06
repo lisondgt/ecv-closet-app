@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import ModalComponent from '../../components/ModalComponent';
 import ImageLibrary from '../../components/ImageLibrary';
 import CameraLaunch from '../../components/CameraLaunch';
 import { ClothingDao } from '../../dao/ClothingDao';
@@ -9,7 +10,6 @@ import styles from '../../../assets/styles/style.js';
 
 import ChevronLeftOrange from './../../../assets/images/chevron-left-orange.svg';
 import PencilWhite from './../../../assets/images/pencil-alt-white.svg';
-import TimesDark from './../../../assets/images/times-dark.svg';
 
 const ClothingUpdateImage = ({ route, navigation }) => {
 
@@ -17,6 +17,24 @@ const ClothingUpdateImage = ({ route, navigation }) => {
     const [imageUri, setImageUri] = useState(ItemValue);
     const [imageName, setImageName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const modalTitle = imageUri !== "" ? (
+        'Modifier la photo'
+    ) : (
+        'Ajouter une photo'
+    );
+
+    const modalContent = () => {
+        return (
+            <View>
+                <View style={styles.MarginBottom10}>
+                    <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
+                </View>
+                <View style={styles.MarginBottom10}>
+                    <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
+                </View>
+            </View>
+        );
+    };
 
     async function updateItem() {
         if (imageUri !== ItemValue) {
@@ -46,36 +64,7 @@ const ClothingUpdateImage = ({ route, navigation }) => {
 
     return (
         <View style={styles.ContainerView}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={styles.modalHeader}>
-                            {imageUri !== "" ? (
-                                <Text style={styles.H3TitleNoMargin}>Modifier la photo</Text>
-                            ) : (
-                                <Text style={styles.H3TitleNoMargin}>Ajouter une photo</Text>
-                            )}
-                            <TouchableOpacity
-                                onPress={() => setModalVisible(!modalVisible)}>
-                                <TimesDark width={20} height={20} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.MarginBottom10}>
-                            <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
-                        </View>
-                        <View style={styles.MarginBottom10}>
-                            <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={modalTitle} modalContent={modalContent()} />
             <Text style={styles.H2Title}>Modifier l'image</Text>
             <View>
                 <View style={componentStyles.ContainerImage}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View, Modal, TextInput } from 'react-native';
+import { Text, TouchableOpacity, View, TextInput } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
+import ModalComponent from './ModalComponent';
 import { ClothingSizeDao } from '../dao/ClothingSizeDao';
 import { AuthService } from '../services/AuthService';
 
@@ -16,6 +17,7 @@ export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
     const [defaultRadio, setDefaultRadio] = useState(ItemValue);
     const [modalVisible, setModalVisible] = useState(false);
     const [value, setValue] = useState("");
+    const modalTitle = 'Ajouter une nouvelle taille';
 
     useEffect(() => {
 
@@ -24,7 +26,30 @@ export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
             clothingSizeDao.fetchAllByUserId(userId).then(setData);
         }
 
-    }, []);
+    }, [isFocused]);
+
+    const modalContent = () => {
+        return (
+            <View>
+                <View style={styles.MarginBottom20}>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={onChangeText}
+                        placeholder="Taille"
+                    />
+                </View>
+                <TouchableOpacity
+                    style={styles.PrimaryButton}
+                    onPress={() => {
+                        setValue(submitHandler(value));
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
 
     const selectHandler = (value) => {
         if (defaultRadio != value) {
@@ -62,42 +87,8 @@ export default function RadioButtonClothingSize({ onSelect, ItemValue }) {
 
     return (
         <View style={styles.ContainerRadioButton}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.H3Title}>Ajouter une nouvelle taille</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={onChangeText}
-                            placeholder="Taille"
-                        />
-                        <View style={styles.ContainerModalButtons}>
-                            <TouchableOpacity
-                                style={styles.ModalButtonCancel}
-                                onPress={() => setModalVisible(!modalVisible)}
-                            >
-                                <Text style={styles.ModalTextButtonCancel}>Annuler</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.ModalButtonSave}
-                                onPress={() => {
-                                    setValue(submitHandler(value));
-                                    setModalVisible(!modalVisible);
-                                }}
-                            >
-                                <Text style={styles.ModalTextButtonSave}>Enregistrer</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={modalTitle} modalContent={modalContent()} />
+
             {data.map((item) => {
                 return (
                     <TouchableOpacity

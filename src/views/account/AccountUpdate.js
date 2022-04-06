@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
 import Preloader from '../../components/Preloader';
 import ImageLibrary from '../../components/ImageLibrary';
 import CameraLaunch from '../../components/CameraLaunch';
+import ModalComponent from '../../components/ModalComponent';
 import { useIsFocused } from "@react-navigation/native";
 import { AuthService } from '../../services/AuthService.js';
 import { StorageService } from '../../services/StorageService.js';
@@ -24,6 +25,11 @@ const AccountUpdate = ({ navigation }) => {
     const [imageUri, setImageUri] = useState(null);
     const [imageName, setImageName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const modalTitle = imageUri !== null ? (
+        'Modifier la photo'
+    ) : (
+        'Ajouter une photo'
+    );
 
     useEffect(() => {
 
@@ -37,13 +43,33 @@ const AccountUpdate = ({ navigation }) => {
 
     }, [isFocused]);
 
+    const modalContent = () => {
+        return (
+            <View>
+                <View style={styles.MarginBottom10}>
+                    <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
+                </View>
+                <View style={styles.MarginBottom20}>
+                    <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
+                </View>
+                {imageUri !== null ? (
+                    <TouchableOpacity
+                        style={styles.contentCenter}
+                        onPress={deleteImage}
+                    >
+                        <Text style={styles.CancelText}>Supprimer</Text>
+                    </TouchableOpacity>) : (null)}
+            </View>
+        );
+    };
+
     const deleteImage = () => {
         setModalVisible(false);
         setImageUri(null);
         setImageName('');
     };
 
-    editUser = () => {
+    const editUser = () => {
 
         if ((imageUri !== currentUser.photoURL) && (imageUri !== null)) {
             setIsLoading(true);
@@ -80,43 +106,7 @@ const AccountUpdate = ({ navigation }) => {
 
     return (
         <View style={styles.ContainerView}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={styles.modalHeader}>
-                            {imageUri !== null ? (
-                                <Text style={styles.H3TitleNoMargin}>Modifier la photo</Text>
-                            ) : (
-                                <Text style={styles.H3TitleNoMargin}>Ajouter une photo</Text>
-                            )}
-                            <TouchableOpacity
-                                onPress={() => setModalVisible(!modalVisible)}>
-                                <TimesDark width={20} height={20} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.MarginBottom10}>
-                            <CameraLaunch onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
-                        </View>
-                        <View style={styles.MarginBottom20}>
-                            <ImageLibrary onSelect={(imageUri, imageName) => { setModalVisible(false), setImageUri(imageUri), setImageName(imageName); }} />
-                        </View>
-                        {imageUri !== null ? (
-                            <TouchableOpacity
-                                style={styles.contentCenter}
-                                onPress={deleteImage}
-                            >
-                                <Text style={styles.CancelText}>Supprimer</Text>
-                            </TouchableOpacity>) : (null)}
-                    </View>
-                </View>
-            </Modal>
+            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={modalTitle} modalContent={modalContent()} />
             <Text style={styles.H1Title}>Modifier mes informations</Text>
             <View style={styles.contentCenter}>
                 <TouchableOpacity
