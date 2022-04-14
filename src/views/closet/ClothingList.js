@@ -174,7 +174,7 @@ const ClothingList = ({ navigation }) => {
   };
 
   keyExtractor = (item) => {
-    return item.name;
+    return item.key;
   };
 
   React.useLayoutEffect(() => {

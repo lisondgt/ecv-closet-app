@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import Preloader from '../../components/Preloader';
 import SignupStep1 from '../../components/SignupStep1';
 import SignupStep2 from '../../components/SignupStep2';

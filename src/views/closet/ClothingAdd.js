@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ScrollView, View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import ClothingAddStep1 from '../../components/ClothingAddStep1';
 import ClothingAddStep2 from '../../components/ClothingAddStep2';
 import ClothingAddStep3 from '../../components/ClothingAddStep3';
