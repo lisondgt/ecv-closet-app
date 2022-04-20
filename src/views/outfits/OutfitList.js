@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, SectionList, FlatList, Image } from 'react-native';
+import { View, TouchableOpacity, Text, SectionList, FlatList, Image, StyleSheet } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
+import { OutfitDao } from '../../dao/OutfitDao.js';
+import { AuthService } from '../../services/AuthService.js';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -8,40 +10,64 @@ import IconPlusWhite from './../../../assets/images/icon-plus-white.svg';
 
 const OutfitList = ({ navigation }) => {
 
+  const currentUserId = new AuthService().getUser().uid;
+  const isFocused = useIsFocused();
+  const [outfitSummer, setOutfitSummer] = useState([]);
+  const [outfitSpring, setOutfitSpring] = useState([]);
+  const [outfitAutumn, setOutfitAutumn] = useState([]);
+  const [outfitWinter, setOutfitWinter] = useState([]);
+  const totalItems = outfitSummer.length
+    + outfitSpring.length
+    + outfitAutumn.length
+    + outfitWinter.length;
+
+  useEffect(() => {
+
+    if (isFocused) {
+      const outfitDao = new OutfitDao();
+
+      outfitDao.fetchAllBySeason('Été', currentUserId).then(setOutfitSummer);
+      outfitDao.fetchAllBySeason('Printemps', currentUserId).then(setOutfitSpring);
+      outfitDao.fetchAllBySeason('Automne', currentUserId).then(setOutfitAutumn);
+      outfitDao.fetchAllBySeason('Hiver', currentUserId).then(setOutfitWinter);
+    }
+
+  }, [isFocused]);
+
   const sections = [
     {
       title: "Été",
-      count: 0,
+      count: outfitSummer.length,
       data: [
         {
-          list: []
+          list: outfitSummer
         },
       ],
     },
     {
       title: "Printemps",
-      count: 0,
+      count: outfitSpring.length,
       data: [
         {
-          list: []
+          list: outfitSpring
         },
       ],
     },
     {
       title: "Automne",
-      count: 0,
+      count: outfitAutumn.length,
       data: [
         {
-          list: []
+          list: outfitAutumn
         },
       ],
     },
     {
       title: "Hiver",
-      count: 0,
+      count: outfitWinter.length,
       data: [
         {
-          list: []
+          list: outfitWinter
         },
       ],
     },
@@ -49,13 +75,13 @@ const OutfitList = ({ navigation }) => {
 
   const renderEmptyContainer = () => {
     return (
-      <View style={styles.CardAddContainer}>
-        <View style={styles.CardAddCol}>
-          <View style={styles.CardAddMargin}>
+      <View style={fileStyle.CardAddContainer}>
+        <View style={fileStyle.CardAddCol}>
+          <View style={fileStyle.CardAddMargin}>
             <TouchableOpacity
               onPress={() => navigation.navigate('OutfitAdd')}
-              style={styles.CardAddButton}>
-              <View style={styles.CardAddIcon}>
+              style={fileStyle.CardAddButton}>
+              <View style={fileStyle.CardAddIcon}>
                 <IconPlusWhite width={20} height={20} />
               </View>
             </TouchableOpacity>
@@ -67,15 +93,15 @@ const OutfitList = ({ navigation }) => {
 
   renderSection = ({ item }) => {
     return (
-      <View style={styles.ClothingView}>
+      <View style={fileStyle.OutfitView}>
         <FlatList
           data={item.list}
           numColumns={3}
           renderItem={this.renderListItem}
           keyExtractor={this.keyExtractor}
           scrollEnabled={false}
-          style={styles.ClothingList}
-          columnWrapperStyle={styles.ClothingRow}
+          style={fileStyle.OutfitList}
+          columnWrapperStyle={fileStyle.OutfitRow}
           ListEmptyComponent={renderEmptyContainer}
         />
       </View>
@@ -92,14 +118,56 @@ const OutfitList = ({ navigation }) => {
 
   renderListItem = ({ item }) => {
     return (
-      <View style={styles.ClothingCol}>
-        <View style={styles.ClothingMargin}>
+      <View style={fileStyle.OutfitCol}>
+        <View style={fileStyle.OutfitMargin}>
           <TouchableOpacity>
-            <View style={styles.ClothingCard}>
-              <Image
-                source={{ uri: item.image }}
-                style={styles.CardClothingImg}
-              />
+            <View style={fileStyle.OutfitCard}>
+              <View style={fileStyle.ImagesContainer}>
+                {item.top ?
+                  <View style={fileStyle.ImagesCol}>
+                    <View style={fileStyle.ImagesMargin}>
+                      <Image
+                        source={{ uri: item.top }}
+                        style={fileStyle.ImageCard}
+                      />
+                    </View>
+                  </View>
+                  : null
+                }
+                {item.bottom ?
+                  <View style={fileStyle.ImagesCol}>
+                    <View style={fileStyle.ImagesMargin}>
+                      <Image
+                        source={{ uri: item.bottom }}
+                        style={fileStyle.ImageCard}
+                      />
+                    </View>
+                  </View>
+                  : null
+                }
+                {item.layer ?
+                  <View style={fileStyle.ImagesCol}>
+                    <View style={fileStyle.ImagesMargin}>
+                      <Image
+                        source={{ uri: item.layer }}
+                        style={fileStyle.ImageCard}
+                      />
+                    </View>
+                  </View>
+                  : null
+                }
+                {item.shoes ?
+                  <View style={fileStyle.ImagesCol}>
+                    <View style={fileStyle.ImagesMargin}>
+                      <Image
+                        source={{ uri: item.shoes }}
+                        style={fileStyle.ImageCard}
+                      />
+                    </View>
+                  </View>
+                  : null
+                }
+              </View>
             </View>
           </TouchableOpacity>
         </View>
@@ -108,7 +176,7 @@ const OutfitList = ({ navigation }) => {
   };
 
   keyExtractor = (item) => {
-    return item.name;
+    return item.key;
   };
 
   React.useLayoutEffect(() => {
@@ -126,7 +194,7 @@ const OutfitList = ({ navigation }) => {
 
   return (
     <View style={styles.ContainerView}>
-      <Text style={styles.Subtitle}>0 Tenues</Text>
+      <Text style={styles.Subtitle}>{totalItems} Tenues</Text>
       <Text style={styles.H1Title}>Mes tenues</Text>
       <SectionList
         sections={sections}
@@ -136,6 +204,81 @@ const OutfitList = ({ navigation }) => {
     </View>
   );
 };
+
+const fileStyle = StyleSheet.create({
+  OutfitView: {
+    marginBottom: 15
+  },
+  OutfitList: {
+    margin: -7,
+  },
+  OutfitRow: {
+    justifyContent: 'flex-start'
+  },
+  OutfitCol: {
+    flex: 1 / 2
+  },
+  OutfitMargin: {
+    margin: 7,
+  },
+  OutfitCard: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    borderRadius: 10,
+    width: '100%',
+    padding: 10
+  },
+  ImagesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    margin: -5
+  },
+  ImagesCol: {
+    width: '50%'
+  },
+  ImagesMargin: {
+    margin: 5
+  },
+  ImageCard: {
+    width: '100%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  CardAddContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  CardAddCol: {
+    flex: 1 / 2
+  },
+  CardAddMargin: {
+    margin: 7,
+  },
+  CardAddButton: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    borderRadius: 10,
+    width: '100%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  CardAddIcon: {
+    backgroundColor: '#808F9D',
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 export default OutfitList;
 
