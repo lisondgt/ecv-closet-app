@@ -194,6 +194,7 @@ const OutfitDetail = ({ route, navigation }) => {
 const fileStyle = StyleSheet.create({
     ItemsCard: {
         width: '100%',
+        minHeight: 380,
         backgroundColor: '#FFFFFF',
         shadowColor: '#000000',
         shadowOffset: { width: 5, height: 5 },
