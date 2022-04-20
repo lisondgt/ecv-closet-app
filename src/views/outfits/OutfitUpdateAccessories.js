@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
-import { ClothingDao } from '../dao/ClothingDao';
-import { AuthService } from '../services/AuthService';
+import { ClothingDao } from '../../dao/ClothingDao';
+import { OutfitDao } from '../../dao/OutfitDao';
+import { AuthService } from '../../services/AuthService';
 
-import styles from '../../assets/styles/style.js';
-import CheckOrange from '../../assets/images/check-circle-orange.svg';
+import styles from '../../../assets/styles/style.js';
 
-export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
+import ChevronLeftOrange from './../../../assets/images/chevron-left-orange.svg';
+import CheckOrange from '../../../assets/images/check-circle-orange.svg';
 
+export default function OutfitUpdateAccessories({ route, navigation }) {
+
+    const { key, values } = route.params;
     const currentUserId = new AuthService().getUser().uid;
     const isFocused = useIsFocused();
     const [clothingAccessories, setClothingAccessories] = useState([]);
+    const [accessories, setAccessories] = useState(values);
 
     useEffect(() => {
 
@@ -23,15 +28,25 @@ export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
     }, [isFocused]);
 
     const selectItem = (item) => {
-        if (values.accessories.length < 4 & !values.accessories.includes(item.image)) {
-            selectHandler([...values.accessories, item.image], "accessories");
-        } else if (values.accessories.includes(item.image)) {
-            var array = [...values.accessories];
+        if (accessories.length < 4 & !accessories.includes(item.image)) {
+            setAccessories([
+                ...accessories,
+                item.image
+            ]);
+        } else if (accessories.includes(item.image)) {
+            var array = [...accessories];
             var index = array.indexOf(item.image);
             array.splice(index, 1);
-            selectHandler(array, "accessories");
+            setAccessories(array);
         }
     };
+
+    async function updateItem() {
+        const outfitDao = new OutfitDao();
+        outfitDao.update(key, {
+            accessories: accessories,
+        }).then(() => navigation.goBack());
+    }
 
     renderListItem = ({ item }) => {
         return (
@@ -43,11 +58,11 @@ export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
                             <Image
                                 source={{ uri: item.image }}
                                 style={
-                                    values.accessories.includes(item.image) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
+                                    accessories.includes(item.image) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
                                 }
                             />
                             {
-                                values.accessories.includes(item.image) ?
+                                accessories.includes(item.image) ?
                                     <View style={fileStyle.CardAccessoriesCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>
@@ -64,9 +79,22 @@ export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
         return item.key;
     };
 
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity
+                    onPress={() =>
+                        navigation.goBack()}
+                    style={styles.IconHeaderLeft}>
+                    <ChevronLeftOrange width={25} height={25} />
+                </TouchableOpacity>
+            ),
+        });
+    }, [navigation]);
+
     return (
-        <View style={{ flex: 1 }}>
-            <Text style={styles.H3Title}>Ajouter des accessoires</Text>
+        <View style={styles.ContainerView}>
+            <Text style={styles.H3Title}>Modifier les accessoires</Text>
             <View style={fileStyle.AccessoriesView}>
                 <FlatList
                     data={clothingAccessories}
@@ -81,7 +109,7 @@ export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
             <View style={fileStyle.ContainerPrimaryButtonBottom}>
                 <TouchableOpacity
                     style={styles.PrimaryButton}
-                    onPress={prevStep}>
+                    onPress={() => updateItem()}>
                     <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                 </TouchableOpacity>
             </View>
@@ -130,7 +158,7 @@ const fileStyle = StyleSheet.create({
     ContainerPrimaryButtonBottom: {
         position: 'absolute',
         bottom: 60,
-        right: 0,
+        right: 15,
         width: '100%',
     }
 });

@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
-import { ClothingDao } from '../dao/ClothingDao';
-import { AuthService } from '../services/AuthService';
+import { ClothingDao } from '../../dao/ClothingDao';
+import { OutfitDao } from '../../dao/OutfitDao';
+import { AuthService } from '../../services/AuthService';
 
-import ShirtGrey from '../../assets/images/shirt-grey-3.svg';
-import ShirtOrange from '../../assets/images/shirt-orange.svg';
-import TrousersGrey from '../../assets/images/trousers-grey-3.svg';
-import TrousersOrange from '../../assets/images/trousers-orange.svg';
-import JacketGrey from '../../assets/images/jacket-grey-3.svg';
-import JacketOrange from '../../assets/images/jacket-orange.svg';
-import ShoeGrey from '../../assets/images/shoe-grey-3.svg';
-import ShoeOrange from '../../assets/images/shoe-orange.svg';
-import CheckOrange from '../../assets/images/check-circle-orange.svg';
+import styles from '../../../assets/styles/style.js';
 
-import styles from '../../assets/styles/style.js';
+import ChevronLeftOrange from './../../../assets/images/chevron-left-orange.svg';
+import ShirtGrey from './../../../assets/images/shirt-grey-3.svg';
+import ShirtOrange from './../../../assets/images/shirt-orange.svg';
+import TrousersGrey from './../../../assets/images/trousers-grey-3.svg';
+import TrousersOrange from './../../../assets/images/trousers-orange.svg';
+import JacketGrey from './../../../assets/images/jacket-grey-3.svg';
+import JacketOrange from './../../../assets/images/jacket-orange.svg';
+import ShoeGrey from './../../../assets/images/shoe-grey-3.svg';
+import ShoeOrange from './../../../assets/images/shoe-orange.svg';
+import CheckOrange from './../../../assets/images/check-circle-orange.svg';
 
-export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
+const OutfitUpdate = ({ route, navigation }) => {
 
+    const { key, values } = route.params;
     const currentUserId = new AuthService().getUser().uid;
     const isFocused = useIsFocused();
     const [dataFlatlist, setDataFlatList] = useState([]);
@@ -26,13 +29,19 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
     const [clothingLayers, setClothingLayers] = useState([]);
     const [clothingShoes, setClothingShoes] = useState([]);
     const [defaultRadio, setDefaultRadio] = useState('top');
+    const [options, setOptions] = useState({
+        top: values.top,
+        bottom: values.bottom,
+        layer: values.layer,
+        shoes: values.shoes,
+    });
 
     useEffect(() => {
 
         if (isFocused) {
             const clothingDao = new ClothingDao();
 
-            clothingDao.fetchAllByType('Hauts', currentUserId).then(setClothingTops);
+            clothingDao.fetchAllByType('Hauts', currentUserId).then(setClothingTops, setDataFlatList);
             clothingDao.fetchAllBottoms(currentUserId).then(setClothingBottoms);
             clothingDao.fetchAllByType('Vestes / Manteaux', currentUserId).then(setClothingLayers);
             clothingDao.fetchAllByType('Chaussures', currentUserId).then(setClothingShoes);
@@ -71,18 +80,36 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
         }
     ];
 
+    console.log(dataFlatlist);
+
     const selectCategory = (item) => {
         setDefaultRadio(item.firebaseName);
         setDataFlatList(item.daoValue);
     };
 
     const selectItem = (item) => {
-        if (values[defaultRadio] != item.image) {
-            selectHandler(item.image, defaultRadio);
+        if (options[defaultRadio] != item.image) {
+            setOptions({
+                ...options,
+                [defaultRadio]: item.image
+            });
         } else {
-            selectHandler('', defaultRadio);
+            setOptions({
+                ...options,
+                [defaultRadio]: ''
+            });
         }
     };
+
+    async function updateItem() {
+        const outfitDao = new OutfitDao();
+        outfitDao.update(key, {
+            top: options.top,
+            bottom: options.bottom,
+            layer: options.layer,
+            shoes: options.shoes,
+        }).then(() => navigation.goBack());
+    }
 
     renderListItem = ({ item }) => {
         return (
@@ -94,11 +121,11 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                             <Image
                                 source={{ uri: item.image }}
                                 style={
-                                    item.image === values[defaultRadio] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
+                                    item.image === options[defaultRadio] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
                                 }
                             />
                             {
-                                item.image === values[defaultRadio] ?
+                                item.image === options[defaultRadio] ?
                                     <View style={fileStyle.CardClothingCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>
@@ -116,9 +143,22 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
         return item.key;
     };
 
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity
+                    onPress={() =>
+                        navigation.goBack()}
+                    style={styles.IconHeaderLeft}>
+                    <ChevronLeftOrange width={25} height={25} />
+                </TouchableOpacity>
+            ),
+        });
+    }, [navigation]);
+
     return (
-        <View style={{ flex: 1 }}>
-            <Text style={styles.H1Title}>Créer une tenue</Text>
+        <View style={styles.ContainerView}>
+            <Text style={styles.H2Title}>Modifier la tenue</Text>
             <View>
                 <View style={fileStyle.ContainerCardButton}>
                     {data.map((item) => {
@@ -131,9 +171,9 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                                             item.firebaseName === defaultRadio ? fileStyle.CardButtonImageSelected : fileStyle.CardButtonImageUnselected
                                         }>
 
-                                            {values[item.firebaseName] ?
+                                            {options[item.firebaseName] ?
                                                 <Image
-                                                    source={{ uri: values[item.firebaseName] }}
+                                                    source={{ uri: options[item.firebaseName] }}
                                                     style={fileStyle.CardButtonImageItem}
                                                 />
                                                 : item.firebaseName === defaultRadio ? item.imageSelected : item.imageDefault
@@ -157,19 +197,16 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                     />
                 </View>
             </View>
-            {values.top || values.bottom || values.layer || values.shoes ?
-                <View style={fileStyle.ContainerPrimaryButtonBottom}>
-                    <TouchableOpacity
-                        style={styles.PrimaryButton}
-                        onPress={nextStep}>
-                        <Text style={styles.PrimaryButtonText}>Suivant</Text>
-                    </TouchableOpacity>
-                </View>
-                : null
-            }
+            <View style={fileStyle.ContainerPrimaryButtonBottom}>
+                <TouchableOpacity
+                    style={styles.PrimaryButton}
+                    onPress={() => updateItem()}>
+                    <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
-}
+};
 
 const fileStyle = StyleSheet.create({
     ContainerCardButton: {
@@ -255,7 +292,9 @@ const fileStyle = StyleSheet.create({
     ContainerPrimaryButtonBottom: {
         position: 'absolute',
         bottom: 60,
-        right: 0,
+        right: 15,
         width: '100%',
     }
 });
+
+export default OutfitUpdate;

@@ -8,7 +8,6 @@ import Login from './../views/login-registration/Login';
 import Signup from './../views/login-registration/Signup';
 import ClosetTabs from './ClosetTabs';
 import ClothingAdd from './../views/closet/ClothingAdd';
-import OutfitAdd from './../views/outfits/OutfitAdd';
 import ClothingDetail from './../views/closet/ClothingDetail';
 import ClothingUpdateImage from './../views/closet/ClothingUpdateImage';
 import ClothingUpdateType from './../views/closet/ClothingUpdateType';
@@ -18,6 +17,11 @@ import ClothingUpdateSize from './../views/closet/ClothingUpdateSize';
 import ClothingUpdateStatus from './../views/closet/ClothingUpdateStatus';
 import ClothingUpdateFit from './../views/closet/ClothingUpdateFit';
 import ClothingUpdateRate from './../views/closet/ClothingUpdateRate';
+import OutfitAdd from './../views/outfits/OutfitAdd';
+import OutfitDetail from '../views/outfits/OutfitDetail';
+import OutfitUpdate from '../views/outfits/OutfitUpdate';
+import OutfitUpdateAccessories from '../views/outfits/OutfitUpdateAccessories';
+import OutfitUpdateSeason from '../views/outfits/OutfitUpdateSeason';
 import AccountUpdate from './../views/account/AccountUpdate';
 import AccountUpdateEmail from '../views/account/AccountUpdateEmail';
 import AccountUpdatePassword from '../views/account/AccountUpdatePassword';
@@ -76,6 +80,10 @@ function ClosetStacks() {
           <Stack.Screen name="ClothingUpdateFit" component={ClothingUpdateFit} />
           <Stack.Screen name="ClothingUpdateRate" component={ClothingUpdateRate} />
           <Stack.Screen name="OutfitAdd" component={OutfitAdd} />
+          <Stack.Screen name="OutfitDetail" component={OutfitDetail} />
+          <Stack.Screen name="OutfitUpdate" component={OutfitUpdate} />
+          <Stack.Screen name="OutfitUpdateAccessories" component={OutfitUpdateAccessories} />
+          <Stack.Screen name="OutfitUpdateSeason" component={OutfitUpdateSeason} />
           <Stack.Screen name="AccountUpdate" component={AccountUpdate} />
           <Stack.Screen name="AccountUpdateEmail" component={AccountUpdateEmail} />
           <Stack.Screen name="AccountUpdatePassword" component={AccountUpdatePassword} />

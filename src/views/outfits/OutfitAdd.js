@@ -25,6 +25,7 @@ const OutfitAdd = ({ navigation }) => {
     accessories: [],
     season: ""
   });
+  const [seasonErrorMessage, setSeasonErrorMessage] = useState('');
 
   const HeaderLeft = () => {
     return (
@@ -76,6 +77,25 @@ const OutfitAdd = ({ navigation }) => {
     });
   };
 
+  seasonValidation = async () => {
+    let errorFlag = false;
+
+    // input validation
+    if (values.season.length == 0) {
+      errorFlag = true;
+      setSeasonErrorMessage("La saison est un champ obligatoire");
+    }
+
+    if (errorFlag) {
+      console.log("errorFlag");
+
+      /** Call Your API */
+    } else {
+      setSeasonErrorMessage("");
+      addItem();
+    }
+  };
+
   function addItem() {
     const outfitDao = new OutfitDao();
     outfitDao.push({
@@ -115,8 +135,9 @@ const OutfitAdd = ({ navigation }) => {
           2: <OutfitAddStep2
             values={values}
             selectHandler={selectHandler}
+            seasonErrorMessage={seasonErrorMessage}
             nextStep={nextStep}
-            addItem={addItem} />,
+            addItem={seasonValidation} />,
           3: <OutfitAddStep3
             values={values}
             selectHandler={selectHandler}

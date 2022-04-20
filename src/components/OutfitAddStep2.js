@@ -1,13 +1,13 @@
 import React from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import RadioButtonClothingSeason from './RadioButtonClothingSeason.js';
 
 import styles from '../../assets/styles/style.js';
 
 import IconPlusWhite from '../../assets/images/icon-plus-white.svg';
-import { ScrollView } from 'react-native-gesture-handler';
 
-export default function OutfitAddStep2({ values, selectHandler, nextStep, addItem }) {
+export default function OutfitAddStep2({ values, selectHandler, seasonErrorMessage, nextStep, addItem }) {
 
     return (
         <ScrollView>
@@ -98,6 +98,7 @@ export default function OutfitAddStep2({ values, selectHandler, nextStep, addIte
             </View>
             <Text style={styles.H3Title}>Saison</Text>
             <RadioButtonClothingSeason ItemValue={values.season} onSelect={(value) => { selectHandler(value, 'season'); }} />
+            {seasonErrorMessage ? <Text style={styles.textDanger}>{seasonErrorMessage}</Text> : null}
             <View style={styles.ContainerPrimaryButton} >
                 <TouchableOpacity
                     style={styles.PrimaryButton}

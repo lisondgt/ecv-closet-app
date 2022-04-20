@@ -120,7 +120,10 @@ const OutfitList = ({ navigation }) => {
     return (
       <View style={fileStyle.OutfitCol}>
         <View style={fileStyle.OutfitMargin}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('OutfitDetail', {
+              key: item.key
+            })}>
             <View style={fileStyle.OutfitCard}>
               <View style={fileStyle.ImagesContainer}>
                 {item.top ?
@@ -229,6 +232,7 @@ const fileStyle = StyleSheet.create({
     shadowRadius: 10,
     borderRadius: 10,
     width: '100%',
+    aspectRatio: 1,
     padding: 10
   },
   ImagesContainer: {
