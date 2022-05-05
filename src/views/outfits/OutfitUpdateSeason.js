@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import RadioButtonClothingSeason from '../../components/RadioButtonClothingSeason';
-import { ClothingDao } from '../../dao/ClothingDao';
 import { OutfitDao } from '../../dao/OutfitDao';
 
 import styles from '../../../assets/styles/style.js';
@@ -12,7 +11,6 @@ const OutfitUpdateSeason = ({ route, navigation }) => {
 
     const { key, ItemValue } = route.params;
     const [option, setOption] = useState(ItemValue);
-    console.log(ItemValue);
 
     async function updateItem() {
         const outfitDao = new OutfitDao();

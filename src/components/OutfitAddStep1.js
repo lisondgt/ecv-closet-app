@@ -123,7 +123,7 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                 <View style={fileStyle.ContainerCardButton}>
                     {data.map((item) => {
                         return (
-                            <View style={fileStyle.CardButtonCol}>
+                            <View key={item.firebaseName} style={fileStyle.CardButtonCol}>
                                 <View style={fileStyle.CardButtonMargin}>
                                     <TouchableOpacity
                                         onPress={() => selectCategory(item)}>

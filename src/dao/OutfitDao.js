@@ -25,4 +25,24 @@ export class OutfitDao extends FirestoreDao {
             return null;
         }
     }
+
+    async fetchAllById(currentUserId) {
+        try {
+            const result = await this.getCollection()
+                .where('userId', '==', currentUserId)
+                .get();
+
+            if (result?.docs?.length > 0) {
+                return result.docs.map(doc => {
+                    return { ...doc.data(), key: doc.id };
+                });
+            }
+
+            return [];
+        } catch (err) {
+            console.error('[OutfitDao][fetchAllById]', err);
+
+            return null;
+        }
+    }
 }

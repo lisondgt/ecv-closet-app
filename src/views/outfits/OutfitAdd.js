@@ -23,7 +23,8 @@ const OutfitAdd = ({ navigation }) => {
     layer: "",
     shoes: "",
     accessories: [],
-    season: ""
+    season: "",
+    dateWorn: []
   });
   const [seasonErrorMessage, setSeasonErrorMessage] = useState('');
 

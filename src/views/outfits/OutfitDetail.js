@@ -27,8 +27,6 @@ const OutfitDetail = ({ route, navigation }) => {
 
     }, [isFocused]);
 
-    console.log('outfitItem', outfitItem);
-
     const deleteItem = () => {
         const outfitDao = new OutfitDao();
         outfitDao.remove(key).then(() => navigation.navigate('OutfitList'));
@@ -140,7 +138,7 @@ const OutfitDetail = ({ route, navigation }) => {
                 {outfitItem.accessories ?
                     outfitItem.accessories.map((item) => {
                         return (
-                            <View style={fileStyle.CardButtonCol}>
+                            <View key={item} style={fileStyle.CardButtonCol}>
                                 <View style={fileStyle.CardButtonMargin}>
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('OutfitUpdateAccessories', {

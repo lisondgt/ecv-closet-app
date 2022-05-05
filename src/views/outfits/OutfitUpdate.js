@@ -80,8 +80,6 @@ const OutfitUpdate = ({ route, navigation }) => {
         }
     ];
 
-    console.log(dataFlatlist);
-
     const selectCategory = (item) => {
         setDefaultRadio(item.firebaseName);
         setDataFlatList(item.daoValue);
