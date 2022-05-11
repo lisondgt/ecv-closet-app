@@ -11,6 +11,26 @@ const OutfitUpdateSeason = ({ route, navigation }) => {
 
     const { key, ItemValue } = route.params;
     const [option, setOption] = useState(ItemValue);
+    const [seasonErrorMessage, setSeasonErrorMessage] = useState('');
+
+    seasonValidation = async () => {
+        let errorFlag = false;
+
+        // input validation
+        if (option.length == 0) {
+            errorFlag = true;
+            setSeasonErrorMessage("La saison est un champ obligatoire");
+        }
+
+        if (errorFlag) {
+            console.log("errorFlag");
+
+            /** Call Your API */
+        } else {
+            setSeasonErrorMessage("");
+            updateItem();
+        }
+    };
 
     async function updateItem() {
         const outfitDao = new OutfitDao();
@@ -36,10 +56,11 @@ const OutfitUpdateSeason = ({ route, navigation }) => {
         <View style={styles.ContainerView}>
             <Text style={styles.H2Title}>Modifier la saison</Text>
             <RadioButtonClothingSeason ItemValue={ItemValue} onSelect={(value) => setOption(value)} />
+            {seasonErrorMessage ? <Text style={styles.textDanger}>{seasonErrorMessage}</Text> : null}
             <View style={styles.ContainerPrimaryButtonBottom}>
                 <TouchableOpacity
                     style={styles.PrimaryButton}
-                    onPress={() => updateItem()}>
+                    onPress={() => seasonValidation()}>
                     <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                 </TouchableOpacity>
             </View>

@@ -12,7 +12,6 @@ import styles from '../../../assets/styles/style.js';
 
 import ChevronLeftOrange from '../../../assets/images/chevron-left-orange.svg';
 import CameraGrey from '../../../assets/images/camera-grey.svg';
-import TimesDark from '../../../assets/images/times-dark.svg';
 
 const AccountUpdate = ({ navigation }) => {
 

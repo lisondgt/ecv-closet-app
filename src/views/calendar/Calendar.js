@@ -6,6 +6,9 @@ import Swiper from 'react-native-swiper';
 import { useIsFocused } from "@react-navigation/native";
 import { OutfitDao } from '../../dao/OutfitDao.js';
 import { AuthService } from '../../services/AuthService.js';
+import { OutfitService } from '../../services/OutfitService.js';
+import { OutfitCalendarDao } from '../../dao/OutfitCalendarDao.js';
+import { ClothingCalendarDao } from '../../dao/ClothingCalendarDao.js';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -16,39 +19,101 @@ import CheckCornerOrange from './../../../assets/images/check-corner-orange.svg'
 const Calendar = ({ navigation }) => {
 
   const currentUserId = new AuthService().getUser().uid;
+  const outfitCalendarDao = new OutfitCalendarDao();
+  const clothingCalendarDao = new ClothingCalendarDao();
   const isFocused = useIsFocused();
   const [outfitItems, setOutfitItems] = useState('');
+  const [calendarOutfit, setCalendarOutfit] = useState('');
   const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
 
     if (isFocused) {
-      const outfitDao = new OutfitDao();
-      outfitDao.fetchAllById(currentUserId).then(setOutfitItems);
+      const outfitService = new OutfitService();
+      outfitService.fetchAllById(currentUserId).then(setOutfitItems);
+      outfitCalendarDao.fetchAllById(currentUserId).then(setCalendarOutfit);
     }
 
   }, [isFocused]);
 
-  function addDateWorn(key, dateWorn) {
-    const outfitDao = new OutfitDao();
-    outfitDao.update(key, {
-      dateWorn: [
-        ...dateWorn,
-        selectedDate
-      ]
+  function addDateWorn(item) {
+    outfitCalendarDao.push({
+      date: selectedDate,
+      outfitKey: item.key,
+      userId: currentUserId
     });
-    outfitDao.fetchAllById(currentUserId).then(setOutfitItems);
+    if (item.topKey) {
+      clothingCalendarDao.push({
+        date: selectedDate,
+        clothingKey: item.topKey,
+        userId: currentUserId
+      });
+    }
+    if (item.bottomKey) {
+      clothingCalendarDao.push({
+        date: selectedDate,
+        clothingKey: item.bottomKey,
+        userId: currentUserId
+      });
+    }
+    if (item.layerKey) {
+      clothingCalendarDao.push({
+        date: selectedDate,
+        clothingKey: item.layerKey,
+        userId: currentUserId
+      });
+    }
+    if (item.shoesKey) {
+      clothingCalendarDao.push({
+        date: selectedDate,
+        clothingKey: item.shoesKey,
+        userId: currentUserId
+      });
+    }
+    if (item.accessoriesKey.length > 0) {
+      console.log(item.accessoriesKey);
+      item.accessoriesKey.map((item) => {
+        clothingCalendarDao.push({
+          date: selectedDate,
+          clothingKey: item,
+          userId: currentUserId
+        });
+      });
+    }
+    outfitCalendarDao.fetchAllById(currentUserId).then(setCalendarOutfit);
   }
 
-  function removeDateWorn(key, dateWorn) {
-    const outfitDao = new OutfitDao();
-    var array = [...dateWorn];
-    var index = array.indexOf(selectedDate);
-    array.splice(index, 1);
-    outfitDao.update(key, {
-      dateWorn: array
+  function outfitKeyCheck(outfitKey) {
+    return calendarOutfit.some(function (el) {
+      return el.outfitKey === outfitKey;
     });
-    outfitDao.fetchAllById(currentUserId).then(setOutfitItems);
+  }
+
+  function dateCheck(date) {
+    return calendarOutfit.some(function (el) {
+      return el.date === date;
+    });
+  }
+
+  function removeDateWorn(outfit) {
+    outfitCalendarDao.removeCalendar(selectedDate, outfit.key).then(() => { outfitCalendarDao.fetchAllById(currentUserId).then(setCalendarOutfit); });
+    if (outfit.topKey) {
+      clothingCalendarDao.removeCalendar(selectedDate, outfit.topKey);
+    }
+    if (outfit.bottomKey) {
+      clothingCalendarDao.removeCalendar(selectedDate, outfit.bottomKey);
+    }
+    if (outfit.layerKey) {
+      clothingCalendarDao.removeCalendar(selectedDate, outfit.layerKey);
+    }
+    if (outfit.shoesKey) {
+      clothingCalendarDao.removeCalendar(selectedDate, outfit.shoesKey);
+    }
+    if (outfit.accessoriesKey.length > 0) {
+      outfit.accessoriesKey.map((item) => {
+        clothingCalendarDao.removeCalendar(selectedDate, item);
+      });
+    }
   }
 
   return (
@@ -77,10 +142,14 @@ const Calendar = ({ navigation }) => {
           outfitItems.map((item) => {
             return (
               <View key={item.key} style={fileStyle.SilderOutfit}>
-                <View style={item.dateWorn.includes(selectedDate)
-                  ? fileStyle.ItemsCardSelected
-                  : fileStyle.ItemsCard}>
-                  {item.dateWorn.includes(selectedDate) ?
+                <View
+                  style={
+                    outfitKeyCheck(item.key) && dateCheck(selectedDate)
+                      ? fileStyle.ItemsCardSelected
+                      : fileStyle.ItemsCard
+                  }
+                >
+                  {outfitKeyCheck(item.key) && dateCheck(selectedDate) ?
                     <View style={fileStyle.ContainerCheckConer}>
                       <CheckCornerOrange width={80} height={80} />
                     </View>
@@ -157,15 +226,15 @@ const Calendar = ({ navigation }) => {
                     : null
                   }
                   <View style={fileStyle.centeredView}>
-                    {item.dateWorn.includes(selectedDate) ?
+                    {outfitKeyCheck(item.key) && dateCheck(selectedDate) ?
                       <TouchableOpacity style={fileStyle.SecondaryButton} onPress={() => {
-                        removeDateWorn(item.key, item.dateWorn);
+                        removeDateWorn(item);
                       }}>
                         <Text style={fileStyle.SecondaryButtonText}>Retirer cette tenue</Text>
                       </TouchableOpacity>
                       :
                       <TouchableOpacity style={fileStyle.PrimaryButton} onPress={() => {
-                        addDateWorn(item.key, item.dateWorn);
+                        addDateWorn(item);
                       }}>
                         <Text style={fileStyle.PrimaryButtonText}>Choisir cette tenue</Text>
                       </TouchableOpacity>

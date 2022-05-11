@@ -140,7 +140,7 @@ const OutfitDetail = ({ route, navigation }) => {
                 <Text style={styles.Text}>Accessoires</Text>
             </View>
             <View style={fileStyle.ContainerCardButton}>
-                {outfitItem.accessoriesImage ?
+                {outfitItem.accessoriesKey != undefined && outfitItem.accessoriesKey.length > 0 ?
                     outfitItem.accessoriesImage.map((item) => {
                         return (
                             <View key={item} style={fileStyle.CardButtonCol}>
@@ -164,7 +164,8 @@ const OutfitDetail = ({ route, navigation }) => {
                             </View>
                         );
                     })
-                    : <View style={fileStyle.CardButtonCol}>
+                    :
+                    <View style={fileStyle.CardButtonCol}>
                         <View style={fileStyle.CardButtonMargin}>
                             <TouchableOpacity>
                                 <View style={fileStyle.CardButtonAdd}>
