@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, SectionList, FlatList, Image, StyleSheet } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
-import { OutfitDao } from '../../dao/OutfitDao.js';
 import { AuthService } from '../../services/AuthService.js';
+import { OutfitService } from '../../services/OutfitService.js';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -24,12 +24,12 @@ const OutfitList = ({ navigation }) => {
   useEffect(() => {
 
     if (isFocused) {
-      const outfitDao = new OutfitDao();
+      const outfitService = new OutfitService();
 
-      outfitDao.fetchAllBySeason('Été', currentUserId).then(setOutfitSummer);
-      outfitDao.fetchAllBySeason('Printemps', currentUserId).then(setOutfitSpring);
-      outfitDao.fetchAllBySeason('Automne', currentUserId).then(setOutfitAutumn);
-      outfitDao.fetchAllBySeason('Hiver', currentUserId).then(setOutfitWinter);
+      outfitService.fetchAllBySeason('Été', currentUserId).then(setOutfitSummer);
+      outfitService.fetchAllBySeason('Printemps', currentUserId).then(setOutfitSpring);
+      outfitService.fetchAllBySeason('Automne', currentUserId).then(setOutfitAutumn);
+      outfitService.fetchAllBySeason('Hiver', currentUserId).then(setOutfitWinter);
     }
 
   }, [isFocused]);

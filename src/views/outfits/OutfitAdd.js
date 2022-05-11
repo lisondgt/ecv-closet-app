@@ -18,13 +18,17 @@ const OutfitAdd = ({ navigation }) => {
   const [step, setStep] = useState(1);
   const [values, setValues] = useState({
     userId: userId,
-    top: "",
-    bottom: "",
-    layer: "",
-    shoes: "",
-    accessories: [],
+    topImage: "",
+    topKey: "",
+    bottomImage: "",
+    bottomKey: "",
+    layerImage: "",
+    layerKey: "",
+    shoesImage: "",
+    shoesKey: "",
+    accessoriesImage: [],
+    accessoriesKey: [],
     season: "",
-    dateWorn: []
   });
   const [seasonErrorMessage, setSeasonErrorMessage] = useState('');
 
@@ -101,11 +105,11 @@ const OutfitAdd = ({ navigation }) => {
     const outfitDao = new OutfitDao();
     outfitDao.push({
       userId: values.userId,
-      top: values.top,
-      bottom: values.bottom,
-      layer: values.layer,
-      shoes: values.shoes,
-      accessories: values.accessories,
+      topKey: values.topKey,
+      bottomKey: values.bottomKey,
+      layerKey: values.layerKey,
+      shoesKey: values.shoesKey,
+      accessoriesKey: values.accessoriesKey,
       season: values.season,
     }).then(() => navigation.navigate('OutfitList'));
   }
@@ -130,7 +134,7 @@ const OutfitAdd = ({ navigation }) => {
         {
           1: <OutfitAddStep1
             values={values}
-            selectHandler={selectHandler}
+            setValues={setValues}
             nextStep={nextStep}
           />,
           2: <OutfitAddStep2
@@ -141,7 +145,7 @@ const OutfitAdd = ({ navigation }) => {
             addItem={seasonValidation} />,
           3: <OutfitAddStep3
             values={values}
-            selectHandler={selectHandler}
+            setValues={setValues}
             prevStep={prevStep} />
         }[step]
       }

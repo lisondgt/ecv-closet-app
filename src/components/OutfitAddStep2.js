@@ -13,44 +13,44 @@ export default function OutfitAddStep2({ values, selectHandler, seasonErrorMessa
         <ScrollView>
             <View style={fileStyle.ItemsCard}>
                 <View style={fileStyle.ImagesContainer}>
-                    {values.top ?
+                    {values.topImage ?
                         <View style={fileStyle.ImagesCol}>
                             <View style={fileStyle.ImagesMargin}>
                                 <Image
-                                    source={{ uri: values.top }}
+                                    source={{ uri: values.topImage }}
                                     style={fileStyle.ImageCard}
                                 />
                             </View>
                         </View>
                         : null
                     }
-                    {values.bottom ?
+                    {values.bottomImage ?
                         <View style={fileStyle.ImagesCol}>
                             <View style={fileStyle.ImagesMargin}>
                                 <Image
-                                    source={{ uri: values.bottom }}
+                                    source={{ uri: values.bottomImage }}
                                     style={fileStyle.ImageCard}
                                 />
                             </View>
                         </View>
                         : null
                     }
-                    {values.layer ?
+                    {values.layerImage ?
                         <View style={fileStyle.ImagesCol}>
                             <View style={fileStyle.ImagesMargin}>
                                 <Image
-                                    source={{ uri: values.layer }}
+                                    source={{ uri: values.layerImage }}
                                     style={fileStyle.ImageCard}
                                 />
                             </View>
                         </View>
                         : null
                     }
-                    {values.shoes ?
+                    {values.shoesImage ?
                         <View style={fileStyle.ImagesCol}>
                             <View style={fileStyle.ImagesMargin}>
                                 <Image
-                                    source={{ uri: values.shoes }}
+                                    source={{ uri: values.shoesImage }}
                                     style={fileStyle.ImageCard}
                                 />
                             </View>
@@ -63,7 +63,7 @@ export default function OutfitAddStep2({ values, selectHandler, seasonErrorMessa
                 <Text style={styles.Text}>Compléter ma tenue avec des accessoires...</Text>
             </View>
             <View style={fileStyle.ContainerCardButton}>
-                {values.accessories.map((item) => {
+                {values.accessoriesImage.map((item) => {
                     return (
                         <View style={fileStyle.CardButtonCol}>
                             <View style={fileStyle.CardButtonMargin}>
@@ -80,7 +80,7 @@ export default function OutfitAddStep2({ values, selectHandler, seasonErrorMessa
                         </View>
                     );
                 })}
-                {values.accessories.length < 4 ?
+                {values.accessoriesImage.length < 4 ?
                     <View style={fileStyle.CardButtonCol}>
                         <View style={fileStyle.CardButtonMargin}>
                             <TouchableOpacity

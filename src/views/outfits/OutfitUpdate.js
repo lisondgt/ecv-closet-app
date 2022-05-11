@@ -28,12 +28,16 @@ const OutfitUpdate = ({ route, navigation }) => {
     const [clothingBottoms, setClothingBottoms] = useState([]);
     const [clothingLayers, setClothingLayers] = useState([]);
     const [clothingShoes, setClothingShoes] = useState([]);
-    const [defaultRadio, setDefaultRadio] = useState('top');
+    const [defaultRadio, setDefaultRadio] = useState('');
     const [options, setOptions] = useState({
-        top: values.top,
-        bottom: values.bottom,
-        layer: values.layer,
-        shoes: values.shoes,
+        topImage: values.topImage,
+        topKey: values.topKey,
+        bottomImage: values.bottomImage,
+        bottomKey: values.bottomKey,
+        layerImage: values.layerImage,
+        layerKey: values.layerKey,
+        shoesImage: values.shoesImage,
+        shoesKey: values.shoesKey
     });
 
     useEffect(() => {
@@ -86,15 +90,17 @@ const OutfitUpdate = ({ route, navigation }) => {
     };
 
     const selectItem = (item) => {
-        if (options[defaultRadio] != item.image) {
+        if (options[defaultRadio + "Image"] != item.image && options[defaultRadio + "Key"] != item.key) {
             setOptions({
                 ...options,
-                [defaultRadio]: item.image
+                [defaultRadio + "Image"]: item.image,
+                [defaultRadio + "Key"]: item.key
             });
         } else {
             setOptions({
                 ...options,
-                [defaultRadio]: ''
+                [defaultRadio + "Image"]: "",
+                [defaultRadio + "Key"]: ""
             });
         }
     };
@@ -102,10 +108,10 @@ const OutfitUpdate = ({ route, navigation }) => {
     async function updateItem() {
         const outfitDao = new OutfitDao();
         outfitDao.update(key, {
-            top: options.top,
-            bottom: options.bottom,
-            layer: options.layer,
-            shoes: options.shoes,
+            topKey: options.topKey,
+            bottomKey: options.bottomKey,
+            layerKey: options.layerKey,
+            shoesKey: options.shoesKey,
         }).then(() => navigation.goBack());
     }
 
@@ -119,11 +125,11 @@ const OutfitUpdate = ({ route, navigation }) => {
                             <Image
                                 source={{ uri: item.image }}
                                 style={
-                                    item.image === options[defaultRadio] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
+                                    item.image === options[defaultRadio + "Image"] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
                                 }
                             />
                             {
-                                item.image === options[defaultRadio] ?
+                                item.image === options[defaultRadio + "Image"] ?
                                     <View style={fileStyle.CardClothingCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>
@@ -161,7 +167,7 @@ const OutfitUpdate = ({ route, navigation }) => {
                 <View style={fileStyle.ContainerCardButton}>
                     {data.map((item) => {
                         return (
-                            <View style={fileStyle.CardButtonCol}>
+                            <View key={item.firebaseName} style={fileStyle.CardButtonCol}>
                                 <View style={fileStyle.CardButtonMargin}>
                                     <TouchableOpacity
                                         onPress={() => selectCategory(item)}>
@@ -169,9 +175,9 @@ const OutfitUpdate = ({ route, navigation }) => {
                                             item.firebaseName === defaultRadio ? fileStyle.CardButtonImageSelected : fileStyle.CardButtonImageUnselected
                                         }>
 
-                                            {options[item.firebaseName] ?
+                                            {options[item.firebaseName + "Image"] ?
                                                 <Image
-                                                    source={{ uri: options[item.firebaseName] }}
+                                                    source={{ uri: options[item.firebaseName + "Image"] }}
                                                     style={fileStyle.CardButtonImageItem}
                                                 />
                                                 : item.firebaseName === defaultRadio ? item.imageSelected : item.imageDefault

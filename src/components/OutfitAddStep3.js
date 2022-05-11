@@ -7,7 +7,7 @@ import { AuthService } from '../services/AuthService';
 import styles from '../../assets/styles/style.js';
 import CheckOrange from '../../assets/images/check-circle-orange.svg';
 
-export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
+export default function OutfitAddStep3({ values, setValues, prevStep }) {
 
     const currentUserId = new AuthService().getUser().uid;
     const isFocused = useIsFocused();
@@ -23,13 +23,24 @@ export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
     }, [isFocused]);
 
     const selectItem = (item) => {
-        if (values.accessories.length < 4 & !values.accessories.includes(item.image)) {
-            selectHandler([...values.accessories, item.image], "accessories");
-        } else if (values.accessories.includes(item.image)) {
-            var array = [...values.accessories];
-            var index = array.indexOf(item.image);
-            array.splice(index, 1);
-            selectHandler(array, "accessories");
+        if (values.accessoriesImage.length < 4 & !values.accessoriesImage.includes(item.image)) {
+            setValues({
+                ...values,
+                "accessoriesImage": [...values.accessoriesImage, item.image],
+                "accessoriesKey": [...values.accessoriesKey, item.key],
+            });
+        } else if (values.accessoriesImage.includes(item.image)) {
+            var arrayImage = [...values.accessoriesImage];
+            var indexImage = arrayImage.indexOf(item.image);
+            arrayImage.splice(indexImage, 1);
+            var arrayKey = [...values.accessoriesKey];
+            var indexKey = arrayKey.indexOf(item.key);
+            arrayKey.splice(indexKey, 1);
+            setValues({
+                ...values,
+                "accessoriesImage": arrayImage,
+                "accessoriesKey": arrayKey,
+            });
         }
     };
 
@@ -43,11 +54,11 @@ export default function OutfitAddStep3({ values, selectHandler, prevStep }) {
                             <Image
                                 source={{ uri: item.image }}
                                 style={
-                                    values.accessories.includes(item.image) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
+                                    values.accessoriesImage.includes(item.image) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
                                 }
                             />
                             {
-                                values.accessories.includes(item.image) ?
+                                values.accessoriesImage.includes(item.image) ?
                                     <View style={fileStyle.CardAccessoriesCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>

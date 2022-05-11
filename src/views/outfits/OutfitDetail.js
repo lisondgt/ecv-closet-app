@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { OutfitDao } from '../../dao/OutfitDao.js';
+import { OutfitService } from '../../services/OutfitService.js';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -21,8 +22,8 @@ const OutfitDetail = ({ route, navigation }) => {
     useEffect(() => {
 
         if (isFocused) {
-            const outfitDao = new OutfitDao();
-            outfitDao.fetchOne(key).then(setOutfitItem);
+            const outfitService = new OutfitService();
+            outfitService.fetchOne(key).then(setOutfitItem);
         }
 
     }, [isFocused]);
@@ -72,10 +73,14 @@ const OutfitDetail = ({ route, navigation }) => {
                 onPress={() => navigation.navigate('OutfitUpdate', {
                     key: key,
                     values: {
-                        top: outfitItem.top,
-                        bottom: outfitItem.bottom,
-                        layer: outfitItem.layer,
-                        shoes: outfitItem.shoes
+                        topImage: outfitItem.topImage,
+                        topKey: outfitItem.topKey,
+                        bottomImage: outfitItem.bottomImage,
+                        bottomKey: outfitItem.bottomKey,
+                        layerImage: outfitItem.layerImage,
+                        layerKey: outfitItem.layerKey,
+                        shoesImage: outfitItem.shoesImage,
+                        shoesKey: outfitItem.shoesKey
                     }
                 })}>
                 <View style={fileStyle.ItemsCard}>
@@ -84,44 +89,44 @@ const OutfitDetail = ({ route, navigation }) => {
                         <PencilWhite width={10} height={10} />
                     </View>
                     <View style={fileStyle.ImagesContainer}>
-                        {outfitItem.top ?
+                        {outfitItem.topImage ?
                             <View style={fileStyle.ImagesCol}>
                                 <View style={fileStyle.ImagesMargin}>
                                     <Image
-                                        source={{ uri: outfitItem.top }}
+                                        source={{ uri: outfitItem.topImage }}
                                         style={fileStyle.ImageCard}
                                     />
                                 </View>
                             </View>
                             : null
                         }
-                        {outfitItem.bottom ?
+                        {outfitItem.bottomImage ?
                             <View style={fileStyle.ImagesCol}>
                                 <View style={fileStyle.ImagesMargin}>
                                     <Image
-                                        source={{ uri: outfitItem.bottom }}
+                                        source={{ uri: outfitItem.bottomImage }}
                                         style={fileStyle.ImageCard}
                                     />
                                 </View>
                             </View>
                             : null
                         }
-                        {outfitItem.layer ?
+                        {outfitItem.layerImage ?
                             <View style={fileStyle.ImagesCol}>
                                 <View style={fileStyle.ImagesMargin}>
                                     <Image
-                                        source={{ uri: outfitItem.layer }}
+                                        source={{ uri: outfitItem.layerImage }}
                                         style={fileStyle.ImageCard}
                                     />
                                 </View>
                             </View>
                             : null
                         }
-                        {outfitItem.shoes ?
+                        {outfitItem.shoesImage ?
                             <View style={fileStyle.ImagesCol}>
                                 <View style={fileStyle.ImagesMargin}>
                                     <Image
-                                        source={{ uri: outfitItem.shoes }}
+                                        source={{ uri: outfitItem.shoesImage }}
                                         style={fileStyle.ImageCard}
                                     />
                                 </View>
@@ -135,15 +140,18 @@ const OutfitDetail = ({ route, navigation }) => {
                 <Text style={styles.Text}>Accessoires</Text>
             </View>
             <View style={fileStyle.ContainerCardButton}>
-                {outfitItem.accessories ?
-                    outfitItem.accessories.map((item) => {
+                {outfitItem.accessoriesImage ?
+                    outfitItem.accessoriesImage.map((item) => {
                         return (
                             <View key={item} style={fileStyle.CardButtonCol}>
                                 <View style={fileStyle.CardButtonMargin}>
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('OutfitUpdateAccessories', {
                                             key: key,
-                                            values: outfitItem.accessories
+                                            values: {
+                                                accessoriesImage: outfitItem.accessoriesImage,
+                                                accessoriesKey: outfitItem.accessoriesKey
+                                            }
                                         })}>
                                         <View style={fileStyle.CardButtonAdd}>
                                             <Image

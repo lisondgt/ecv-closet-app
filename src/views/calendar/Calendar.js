@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import CalendarStrip from 'react-native-calendar-strip';
+import moment from 'moment';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from "@react-navigation/native";
 import { OutfitDao } from '../../dao/OutfitDao.js';
@@ -15,10 +16,9 @@ import CheckCornerOrange from './../../../assets/images/check-corner-orange.svg'
 const Calendar = ({ navigation }) => {
 
   const currentUserId = new AuthService().getUser().uid;
-  const [outfitItems, setOutfitItems] = useState('');
-  const [selectedDate, setSelectedDate] = useState(today);
   const isFocused = useIsFocused();
-  let today = new Date();
+  const [outfitItems, setOutfitItems] = useState('');
+  const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
 
@@ -254,6 +254,7 @@ const fileStyle = StyleSheet.create({
   },
   ItemsCardSelected: {
     width: '100%',
+    height: 530,
     backgroundColor: '#FFFFFF',
     shadowColor: '#000000',
     shadowOffset: { width: 5, height: 5 },
@@ -269,12 +270,15 @@ const fileStyle = StyleSheet.create({
   },
   ItemsCard: {
     width: '100%',
+    height: 530,
     backgroundColor: '#FFFFFF',
     shadowColor: '#000000',
     shadowOffset: { width: 5, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
     borderRadius: 10,
+    borderColor: '#FFFFFF',
+    borderWidth: 2,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     padding: 20,
@@ -332,11 +336,15 @@ const fileStyle = StyleSheet.create({
     alignItems: 'center'
   },
   centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
     marginTop: 10,
     alignSelf: 'center'
   },
   PrimaryButton: {
     backgroundColor: '#DD6E42',
+    borderColor: '#DD6E42',
+    borderWidth: 2,
     paddingVertical: 5,
     paddingHorizontal: 20,
     borderRadius: 30,

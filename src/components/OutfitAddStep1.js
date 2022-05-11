@@ -16,7 +16,7 @@ import CheckOrange from '../../assets/images/check-circle-orange.svg';
 
 import styles from '../../assets/styles/style.js';
 
-export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
+export default function OutfitAddStep1({ values, setValues, nextStep }) {
 
     const currentUserId = new AuthService().getUser().uid;
     const isFocused = useIsFocused();
@@ -25,7 +25,7 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
     const [clothingBottoms, setClothingBottoms] = useState([]);
     const [clothingLayers, setClothingLayers] = useState([]);
     const [clothingShoes, setClothingShoes] = useState([]);
-    const [defaultRadio, setDefaultRadio] = useState('top');
+    const [defaultRadio, setDefaultRadio] = useState('');
 
     useEffect(() => {
 
@@ -77,10 +77,18 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
     };
 
     const selectItem = (item) => {
-        if (values[defaultRadio] != item.image) {
-            selectHandler(item.image, defaultRadio);
+        if (values[defaultRadio + "Image"] != item.image && values[defaultRadio + "Key"] != item.key) {
+            setValues({
+                ...values,
+                [defaultRadio + "Image"]: item.image,
+                [defaultRadio + "Key"]: item.key
+            });
         } else {
-            selectHandler('', defaultRadio);
+            setValues({
+                ...values,
+                [defaultRadio + "Image"]: "",
+                [defaultRadio + "Key"]: ""
+            });
         }
     };
 
@@ -94,11 +102,11 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                             <Image
                                 source={{ uri: item.image }}
                                 style={
-                                    item.image === values[defaultRadio] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
+                                    item.image === values[defaultRadio + "Image"] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
                                 }
                             />
                             {
-                                item.image === values[defaultRadio] ?
+                                item.image === values[defaultRadio + "Image"] ?
                                     <View style={fileStyle.CardClothingCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>
@@ -131,9 +139,9 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                                             item.firebaseName === defaultRadio ? fileStyle.CardButtonImageSelected : fileStyle.CardButtonImageUnselected
                                         }>
 
-                                            {values[item.firebaseName] ?
+                                            {values[item.firebaseName + "Image"] ?
                                                 <Image
-                                                    source={{ uri: values[item.firebaseName] }}
+                                                    source={{ uri: values[item.firebaseName + "Image"] }}
                                                     style={fileStyle.CardButtonImageItem}
                                                 />
                                                 : item.firebaseName === defaultRadio ? item.imageSelected : item.imageDefault
@@ -157,7 +165,7 @@ export default function OutfitAddStep1({ values, selectHandler, nextStep }) {
                     />
                 </View>
             </View>
-            {values.top || values.bottom || values.layer || values.shoes ?
+            {values.topKey || values.bottomKey || values.layerKey || values.shoesKey ?
                 <View style={fileStyle.ContainerPrimaryButtonBottom}>
                     <TouchableOpacity
                         style={styles.PrimaryButton}
