@@ -4,7 +4,6 @@ import CalendarStrip from 'react-native-calendar-strip';
 import moment from 'moment';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from "@react-navigation/native";
-import { OutfitDao } from '../../dao/OutfitDao.js';
 import { AuthService } from '../../services/AuthService.js';
 import { OutfitService } from '../../services/OutfitService.js';
 import { OutfitCalendarDao } from '../../dao/OutfitCalendarDao.js';
@@ -14,7 +13,7 @@ import styles from './../../../assets/styles/style.js';
 
 import PencilWhite from './../../../assets/images/pencil-alt-white.svg';
 import IconPlusWhite from './../../../assets/images/icon-plus-white.svg';
-import CheckCornerOrange from './../../../assets/images/check-corner-orange.svg';
+import CheckWhite from './../../../assets/images/check-white.svg';
 
 const Calendar = ({ navigation }) => {
 
@@ -150,8 +149,8 @@ const Calendar = ({ navigation }) => {
                   }
                 >
                   {outfitKeyCheck(item.key) && dateCheck(selectedDate) ?
-                    <View style={fileStyle.ContainerCheckConer}>
-                      <CheckCornerOrange width={80} height={80} />
+                    <View style={fileStyle.ContainerCheck}>
+                      <CheckWhite width={15} height={15} />
                     </View>
                     :
                     <TouchableOpacity style={fileStyle.EditButton}
@@ -273,11 +272,14 @@ const fileStyle = StyleSheet.create({
     fontSize: 12,
     color: '#808F9D'
   },
-  ContainerCheckConer: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    zIndex: 1
+  ContainerCheck: {
+    backgroundColor: '#DD6E42',
+    padding: 6,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginBottom: 10
   },
   CardAddButton: {
     backgroundColor: '#FFFFFF',
