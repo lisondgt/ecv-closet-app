@@ -44,6 +44,14 @@ export default function OutfitAddStep3({ values, setValues, prevStep }) {
         }
     };
 
+    renderEmptyContainer = () => {
+        return (
+            <View style={fileStyle.AccessoriesMargin}>
+                <Text style={styles.Text}>Vous avez aucun accessoire</Text>
+            </View>
+        );
+    };
+
     renderListItem = ({ item }) => {
         return (
             <View style={fileStyle.AccessoriesCol}>
@@ -84,6 +92,7 @@ export default function OutfitAddStep3({ values, setValues, prevStep }) {
                     numColumns={4}
                     renderItem={this.renderListItem}
                     keyExtractor={this.keyExtractor}
+                    ListEmptyComponent={this.renderEmptyContainer}
                     scrollEnabled={false}
                     style={fileStyle.AccessoriesList}
                     columnWrapperStyle={fileStyle.AccessoriesRow}

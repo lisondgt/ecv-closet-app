@@ -92,6 +92,14 @@ export default function OutfitAddStep1({ values, setValues, nextStep }) {
         }
     };
 
+    renderEmptyContainer = () => {
+        return (
+            <View style={fileStyle.ClothingMargin}>
+                <Text style={styles.Text}>Vous n'avez aucun article dans cette catégorie</Text>
+            </View>
+        );
+    };
+
     renderListItem = ({ item }) => {
         return (
             <View style={fileStyle.ClothingCol}>
@@ -158,6 +166,7 @@ export default function OutfitAddStep1({ values, setValues, nextStep }) {
                         data={dataFlatlist}
                         numColumns={4}
                         renderItem={this.renderListItem}
+                        ListEmptyComponent={this.renderEmptyContainer}
                         keyExtractor={this.keyExtractor}
                         scrollEnabled={false}
                         style={fileStyle.ClothingList}
