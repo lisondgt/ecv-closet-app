@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { SafeAreaView, View, TouchableOpacity, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import ClothingAddStep1 from '../../components/ClothingAddStep1';
 import ClothingAddStep2 from '../../components/ClothingAddStep2';
 import ClothingAddStep3 from '../../components/ClothingAddStep3';
+import ProgressBarComponent from '../../components/ProgressBarComponent';
 import { ClothingDao } from '../../dao/ClothingDao';
 import { AuthService } from '../../services/AuthService';
 import { StorageService } from '../../services/StorageService';
@@ -29,6 +30,7 @@ const ClothingAdd = ({ navigation }) => {
         fit: "",
         rate: "",
     });
+    const [progress, setProgress] = useState(0);
 
     const [step, setStep] = useState(1);
 
@@ -82,11 +84,11 @@ const ClothingAdd = ({ navigation }) => {
     };
 
     function addItem() {
-        new StorageService().uploadAndGetUrl(values.imageName, values.imageUri).then((url) => {
+        new StorageService().upload(values.imageName, values.imageUri, (progress) => setProgress(progress)).then(() => {
             const clothingDao = new ClothingDao();
             clothingDao.push({
                 userId: values.userId,
-                image: url,
+                image: values.imageName,
                 type: values.type,
                 color: values.color,
                 season: values.season,
@@ -112,29 +114,35 @@ const ClothingAdd = ({ navigation }) => {
     };
 
     return (
-        <ScrollView style={styles.ContainerView}>
-            {updateHeader()}
-            {
+        <SafeAreaView style={styles.ContainerSafeArea}>
+            <ScrollView style={styles.ContainerView}>
+                {updateHeader()}
                 {
-                    1: <ClothingAddStep1 values={values} selectHandler={selectHandler} nextStep={nextStep} />,
-                    2: <ClothingAddStep2 values={values} selectHandler={selectHandler} nextStep={nextStep} />,
-                    3: <ClothingAddStep3 values={values} selectHandler={selectHandler} />,
-                }[step]
-            }
-            <View style={styles.ContainerPrimaryButton}>
-                <TouchableOpacity onPress={nextStep}>
-                    {step === 3 ?
+                    {
+                        1: <ClothingAddStep1 values={values} selectHandler={selectHandler} nextStep={nextStep} />,
+                        2: <ClothingAddStep2 values={values} selectHandler={selectHandler} nextStep={nextStep} />,
+                        3: <ClothingAddStep3 values={values} selectHandler={selectHandler} />,
+                    }[step]
+                }
+                {step === 3 ?
+                    <View style={styles.ContainerPrimaryButton}>
                         <TouchableOpacity
                             style={styles.PrimaryButton}
                             onPress={() => addItem()}>
                             <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                         </TouchableOpacity>
-                        : null
-                    }
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                    </View>
+                    : null
+                }
+            </ScrollView>
+            {progress > 0 ?
+                <View style={styles.ContainerProgressBar}>
+                    <ProgressBarComponent progress={progress} />
+                </View>
+                : null
+            }
+        </SafeAreaView>
     );
 
 };
-export default ClothingAdd;
+export default ClothingAdd;;

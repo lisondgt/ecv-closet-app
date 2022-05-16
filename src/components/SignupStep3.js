@@ -7,7 +7,6 @@ import CameraLaunch from './CameraLaunch.js';
 import styles from '../../assets/styles/style.js';
 
 import CameraGrey from '../../assets/images/camera-grey.svg';
-import TimesDark from '../../assets/images/times-dark.svg';
 
 export default function SignupStep3({ imageUri, setImageUri, setImageName, nextStep }) {
 
@@ -53,7 +52,7 @@ export default function SignupStep3({ imageUri, setImageUri, setImageName, nextS
             <View style={styles.contentCenter}>
                 <TouchableOpacity
                     onPress={() => setModalVisible(true)}>
-                    {imageUri !== "" ? (
+                    {imageUri !== null ? (
                         <View>
                             <View style={styles.MarginBottom10}>
                                 <Image
@@ -72,7 +71,7 @@ export default function SignupStep3({ imageUri, setImageUri, setImageName, nextS
                 </TouchableOpacity>
             </View>
             <View style={styles.ContainerPrimaryButtonBottom}>
-                {imageUri !== "" ? (
+                {imageUri !== null ? (
                     <TouchableOpacity
                         style={styles.PrimaryButton}
                         onPress={nextStep}>

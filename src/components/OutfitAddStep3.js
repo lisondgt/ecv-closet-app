@@ -23,15 +23,15 @@ export default function OutfitAddStep3({ values, setValues, prevStep }) {
     }, [isFocused]);
 
     const selectItem = (item) => {
-        if (values.accessoriesImage.length < 4 & !values.accessoriesImage.includes(item.image)) {
+        if (values.accessoriesImage.length < 4 & !values.accessoriesImage.includes(item.imageUrl)) {
             setValues({
                 ...values,
-                "accessoriesImage": [...values.accessoriesImage, item.image],
+                "accessoriesImage": [...values.accessoriesImage, item.imageUrl],
                 "accessoriesKey": [...values.accessoriesKey, item.key],
             });
-        } else if (values.accessoriesImage.includes(item.image)) {
+        } else if (values.accessoriesImage.includes(item.imageUrl)) {
             var arrayImage = [...values.accessoriesImage];
-            var indexImage = arrayImage.indexOf(item.image);
+            var indexImage = arrayImage.indexOf(item.imageUrl);
             arrayImage.splice(indexImage, 1);
             var arrayKey = [...values.accessoriesKey];
             var indexKey = arrayKey.indexOf(item.key);
@@ -52,13 +52,13 @@ export default function OutfitAddStep3({ values, setValues, prevStep }) {
                         onPress={() => selectItem(item)}>
                         <View style={fileStyle.AccessoriesCard}>
                             <Image
-                                source={{ uri: item.image }}
+                                source={{ uri: item.imageUrl }}
                                 style={
-                                    values.accessoriesImage.includes(item.image) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
+                                    values.accessoriesImage.includes(item.imageUrl) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
                                 }
                             />
                             {
-                                values.accessoriesImage.includes(item.image) ?
+                                values.accessoriesImage.includes(item.imageUrl) ?
                                     <View style={fileStyle.CardAccessoriesCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import Preloader from '../../components/Preloader';
 import SignupStep1 from '../../components/SignupStep1';
 import SignupStep2 from '../../components/SignupStep2';
 import SignupStep3 from '../../components/SignupStep3';
 import SignupStep4 from '../../components/SignupStep4';
+import ProgressBarComponent from '../../components/ProgressBarComponent';
 import { AuthService } from '../../services/AuthService';
 
 import styles from '../../../assets/styles/style.js';
@@ -25,8 +25,8 @@ const Signup = ({ navigation }) => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [confirmPassword, onChangeConfirmPassword] = useState('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
+  const [progress, setProgress] = useState(0);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
 
   const HeaderLeft = () => {
@@ -74,18 +74,15 @@ const Signup = ({ navigation }) => {
 
   step2Validation = async () => {
     let errorFlag = false;
+    let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
     // input validation
-    if (email.length == 0) {
+    if (regEmail.test(email) === false) {
       errorFlag = true;
-      setEmailErrorMessage("L'email est requis");
+      setEmailErrorMessage("L'adresse e-mail est mal formatée");
     }
 
-    if (errorFlag) {
-      console.log("errorFlag");
-
-      /** Call Your API */
-    } else {
+    if (!errorFlag) {
       setEmailErrorMessage("");
       nextStep();
     }
@@ -101,6 +98,9 @@ const Signup = ({ navigation }) => {
     } else if (password.length < 8 || password.length > 20) {
       errorFlag = true;
       setPasswordErrorMessage("Votre mot de passe doit contenir entre 8 et 20 charactères");
+    } else {
+      errorFlag = false;
+      setPasswordErrorMessage("");
     }
 
     if (confirmPassword.length == 0) {
@@ -112,13 +112,13 @@ const Signup = ({ navigation }) => {
     } else if (password !== confirmPassword) {
       errorFlag = true;
       setConfirmPasswordErrorMessage("Le mot de passe et la confirmation ne correspondent pas");
+    } else {
+      errorFlag = false;
+      setConfirmPasswordErrorMessage("");
     }
 
-    if (errorFlag) {
-      console.log("errorFlag");
-
-      /** Call Your API */
-    } else {
+    if (!errorFlag) {
+      errorFlag = false;
       setPasswordErrorMessage("");
       setConfirmPasswordErrorMessage("");
       registerUser();
@@ -127,18 +127,11 @@ const Signup = ({ navigation }) => {
 
   registerUser = () => {
     const authService = new AuthService();
-    if (imageUri !== '') {
-      new StorageService().uploadAndGetUrl(imageName, imageUri).then((photoURL) => {
-        setIsLoading(true);
-        return authService.signUp({ email, password, firstname, lastname, photoURL }).then(() => {
-          setIsLoading(false);
-        });
+    if (imageUri !== null) {
+      new StorageService().uploadAndGetUrl(imageName, imageUri, (progress) => setProgress(progress)).then((photoURL) => {
+        return authService.signUp({ email, password, firstname, lastname, photoURL });
       });
-    } else {
-      setIsLoading(true);
-      authService.signUp({ email, password, firstname, lastname }).then(() => {
-        setIsLoading(false);
-      });
+      authService.signUp({ email, password, firstname, lastname });
     }
 
   };
@@ -192,8 +185,10 @@ const Signup = ({ navigation }) => {
           />,
         }[step]
       }
-      {isLoading === true ?
-        <Preloader />
+      {progress > 0 ?
+        <View style={styles.ContainerProgressBar}>
+          <ProgressBarComponent progress={progress} />
+        </View>
         : null
       }
     </View>

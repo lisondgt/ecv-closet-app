@@ -9,20 +9,13 @@ export class AuthService {
                 displayName: firstname + ' ' + lastname,
                 photoURL
             });
-            console.log('User registered successfully!');
         } catch (err) {
             console.error('[AuthService][signUp]', err);
         }
     }
 
     async signIn(email, password) {
-        try {
-            await auth().signInWithEmailAndPassword(email, password);
-            console.log('User logged-in successfully!');
-        } catch (err) {
-            console.error('[AuthService][signIn]', err);
-        }
-
+        return auth().signInWithEmailAndPassword(email, password);
     }
 
     getUser() {
@@ -59,7 +52,6 @@ export class AuthService {
     async changeEmail(email) {
         try {
             await auth().currentUser.updateEmail(email);
-            console.log("Email updated!");
         } catch (err) {
             console.error('[AuthService][changeEmail]', err);
         }
@@ -68,7 +60,6 @@ export class AuthService {
     async changePassword(newPassword) {
         try {
             await auth().currentUser.updatePassword(newPassword);
-            console.log("Password updated!");
         } catch (err) {
             console.error('[AuthService][changePassword]', err);
         }

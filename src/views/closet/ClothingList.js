@@ -163,7 +163,7 @@ const ClothingList = ({ navigation }) => {
           >
             <View style={styles.ClothingCard}>
               <Image
-                source={{ uri: item.image }}
+                source={{ uri: item.imageUrl }}
                 style={styles.CardClothingImg}
               />
             </View>

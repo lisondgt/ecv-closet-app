@@ -9,18 +9,28 @@ export class StorageService {
         }
     }
 
-    async uploadAndGetUrl(name, uri) {
+    async uploadAndGetUrl(name, uri, progressCallBack) {
         try {
-            await this.upload(name, uri);
-            return this.getUrl(name);
+            const ref = await this.upload(name, uri, progressCallBack);
+            // return this.getUrl(name);
+            return ref.getDownloadURL();
         } catch (err) {
             console.error('[StorageService][uploadAndGetUrl]', err);
         }
     }
 
-    async upload(name, uri) {
+    async upload(name, uri, progressCallBack) {
         try {
-            await storage().ref(name).putFile(uri);
+            const ref = storage().ref(name);
+            const task = ref.putFile(uri);
+            task.on('state_changed', (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                if (progressCallBack) {
+                    progressCallBack(progress);
+                }
+            });
+            await task;
+            return ref;
         } catch (err) {
             console.error('[StorageService][upload]', err);
         }

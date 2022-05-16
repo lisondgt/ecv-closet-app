@@ -1,6 +1,9 @@
 import firestore from '@react-native-firebase/firestore';
+import { StorageService } from '../services/StorageService';
 
 export class FirestoreDao {
+  storageService = new StorageService();
+
   // collectionPath: string
   constructor(collectionPath) {
     if (collectionPath == null) {
@@ -106,7 +109,13 @@ export class FirestoreDao {
         .get();
 
       if (doc != null) {
-        return { ...doc.data(), key: doc.id };
+        const result = { ...doc.data(), key: doc.id };
+        if (result.image) {
+          await this.storageService.getUrl('/' + result.image).then((url) => {
+            result.imageUrl = url;
+          });
+        }
+        return result;
       }
 
       return null;

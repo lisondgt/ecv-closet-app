@@ -1,16 +1,20 @@
 import { ClothingDao } from "../dao/ClothingDao";
 import { OutfitDao } from "../dao/OutfitDao";
+import { StorageService } from '../services/StorageService';
 
 export class OutfitService {
     outfitDao = new OutfitDao();
     clothingDao = new ClothingDao();
+    storageService = new StorageService();
 
     async fetchAllById(currentUserId) {
         return this.outfitDao.fetchAllById(currentUserId).then((outfits) => {
             return Promise.all(outfits.map((outfit) => {
                 return Promise.all([
                     this.fetchClothingImage(outfit.topKey).then((clothingImage) => {
-                        outfit.top = clothingImage;
+                        this.storageService.getUrl('/' + clothingImage).then((url) => {
+                            outfit.top = url;
+                        });
                     }),
                     this.fetchClothingImage(outfit.bottomKey).then((clothingImage) => {
                         outfit.bottom = clothingImage;
@@ -82,7 +86,10 @@ export class OutfitService {
     async fetchClothingImage(clothingKey) {
         if (clothingKey) {
             return this.clothingDao.fetchOne(clothingKey).then((clothing) => {
-                return clothing.image;
+                return this.storageService.getUrl('/' + clothing.image).then((url) => {
+                    clothing.image = url;
+                    return clothing.image;
+                });
             });
         }
         return null;

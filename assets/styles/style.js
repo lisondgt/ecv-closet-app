@@ -381,5 +381,17 @@ export default StyleSheet.create({
     ContainerTextCardButton: {
         marginTop: 10,
         alignItems: 'center'
+    },
+    ContainerProgressBar: {
+        left: 15,
+        right: 15,
+        top: 0,
+        bottom: 0,
+        position: 'absolute',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(240, 241, 241, 0.8)'
+    },
+    ContainerSafeArea: {
+        flex: 1
     }
 });

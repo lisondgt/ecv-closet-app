@@ -77,10 +77,10 @@ export default function OutfitAddStep1({ values, setValues, nextStep }) {
     };
 
     const selectItem = (item) => {
-        if (values[defaultRadio + "Image"] != item.image && values[defaultRadio + "Key"] != item.key) {
+        if (values[defaultRadio + "Image"] != item.imageUrl && values[defaultRadio + "Key"] != item.key) {
             setValues({
                 ...values,
-                [defaultRadio + "Image"]: item.image,
+                [defaultRadio + "Image"]: item.imageUrl,
                 [defaultRadio + "Key"]: item.key
             });
         } else {
@@ -100,13 +100,13 @@ export default function OutfitAddStep1({ values, setValues, nextStep }) {
                         onPress={() => selectItem(item)}>
                         <View style={fileStyle.ClothingCard}>
                             <Image
-                                source={{ uri: item.image }}
+                                source={{ uri: item.imageUrl }}
                                 style={
-                                    item.image === values[defaultRadio + "Image"] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
+                                    item.imageUrl === values[defaultRadio + "Image"] ? fileStyle.CardClothingImgSelected : fileStyle.CardClothingImg
                                 }
                             />
                             {
-                                item.image === values[defaultRadio + "Image"] ?
+                                item.imageUrl === values[defaultRadio + "Image"] ?
                                     <View style={fileStyle.CardClothingCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>

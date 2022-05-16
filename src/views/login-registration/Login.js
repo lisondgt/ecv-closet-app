@@ -9,6 +9,9 @@ import ChevronLeftOrange from './../../../assets/images/chevron-left-orange.svg'
 
 const Login = ({ navigation }) => {
 
+  const [errorEmailMessage, setErrorEmailMessage] = useState('');
+  const [errorPasswordMessage, setErrorPasswordMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [values, setValues] = useState({
     email: "",
     password: ""
@@ -23,12 +26,24 @@ const Login = ({ navigation }) => {
   };
 
   userLogin = () => {
-    if (values.email === '' && values.password === '') {
-      Alert.alert('Enter details to signin!');
-    } else {
-      setIsLoading(true);
-      new AuthService().signIn(values.email, values.password).then(() => setIsLoading(false));
-    }
+    setIsLoading(true);
+    new AuthService().signIn(values.email, values.password)
+      .then(() => setIsLoading(false))
+      .catch(error => {
+        setIsLoading(false);
+        switch (error.code) {
+          case 'auth/user-not-found':
+            setErrorEmailMessage('Vérifier votre adresse email');
+            setErrorPasswordMessage('');
+          case 'auth/invalid-email':
+            setErrorEmailMessage('Vérifier votre adresse email');
+            setErrorPasswordMessage('');
+          case 'auth/wrong-password':
+            setErrorEmailMessage('');
+            setErrorPasswordMessage('Vérifier votre mot de passe');
+            break;
+        }
+      });
   };
 
   React.useLayoutEffect(() => {
@@ -59,6 +74,7 @@ const Login = ({ navigation }) => {
           autoCorrect={false}
           onChangeText={(value) => updateInputVal(value, 'email')}
         />
+        {errorEmailMessage ? <Text style={styles.textDanger}>{errorEmailMessage}</Text> : null}
       </View>
       <View style={styles.MarginBottom40}>
         <View style={styles.MarginBottom10}>
@@ -70,8 +86,10 @@ const Login = ({ navigation }) => {
           onChangeText={(value) => updateInputVal(value, 'password')}
           secureTextEntry={true}
         />
+        {errorPasswordMessage ? <Text style={styles.textDanger}>{errorPasswordMessage}</Text> : null}
       </View>
       <View>
+        {errorMessage ? <Text style={styles.textDanger}>{errorMessage}</Text> : null}
         <View style={styles.MarginBottom15}>
           <TouchableOpacity
             style={styles.PrimaryButton}

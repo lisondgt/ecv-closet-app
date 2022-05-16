@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { ProgressBar } from 'react-native-paper';
 import { useIsFocused } from "@react-navigation/native";
 import { AuthService } from '../../services/AuthService.js';
@@ -124,11 +123,11 @@ const Analytics = () => {
   };
 
   return (
-    <ScrollView style={styles.ContainerView}>
+    <View style={styles.ContainerView}>
       <Text style={styles.H1Title}>Mes données</Text>
       <View style={viewStyles.ContainerBgBlue}>
         <View style={viewStyles.ContainerText}>
-          <Text style={viewStyles.TextLeft}>{pourcentageClothingWorn}% de votre placard porté</Text>
+          <Text style={viewStyles.TextLeft}>{pourcentageClothingWorn ? pourcentageClothingWorn : 0}% de votre placard porté</Text>
           <Text style={viewStyles.TextRight}>{clothingWorn.length} sur {totalItems}</Text>
         </View>
         <ProgressBar progress={pourcentageClothingWorn ? pourcentageClothingWorn / 100 : 0} color={'#FFFFFF'} style={viewStyles.ProgressBar} />
@@ -153,15 +152,18 @@ const Analytics = () => {
         style={viewStyles.ListTop}
         renderItem={this.renderListItem}
         keyExtractor={this.keyExtractor}
-        scrollEnabled={false}
       />
-    </ScrollView>
+    </View>
   );
 };
 const viewStyles = StyleSheet.create({
   ContainerBgBlue: {
     backgroundColor: '#748CAA',
-    borderRadius: 20,
+    shadowColor: '#000000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    borderRadius: 10,
     padding: 10,
     marginBottom: 20
   },
@@ -200,6 +202,11 @@ const viewStyles = StyleSheet.create({
   },
   ContentChiffreCles: {
     backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    borderRadius: 10,
     padding: 10,
     borderRadius: 10,
     flexDirection: 'row',
@@ -220,7 +227,7 @@ const viewStyles = StyleSheet.create({
     maxWidth: 67
   },
   ListTop: {
-    marginBottom: 40
+    marginBottom: 15
   },
   ListItem: {
     marginVertical: 5,
@@ -237,6 +244,10 @@ const viewStyles = StyleSheet.create({
     width: 70,
     height: 70,
     backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',

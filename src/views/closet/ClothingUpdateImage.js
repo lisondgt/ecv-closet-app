@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import ModalComponent from '../../components/ModalComponent';
 import ImageLibrary from '../../components/ImageLibrary';
 import CameraLaunch from '../../components/CameraLaunch';
+import ProgressBarComponent from '../../components/ProgressBarComponent';
 import { ClothingDao } from '../../dao/ClothingDao';
 import { StorageService } from '../../services/StorageService';
 
@@ -22,6 +23,7 @@ const ClothingUpdateImage = ({ route, navigation }) => {
     ) : (
         'Ajouter une photo'
     );
+    const [progress, setProgress] = useState(0);
 
     const modalContent = () => {
         return (
@@ -38,10 +40,10 @@ const ClothingUpdateImage = ({ route, navigation }) => {
 
     async function updateItem() {
         if (imageUri !== ItemValue) {
-            new StorageService().uploadAndGetUrl(imageName, imageUri).then((url) => {
+            new StorageService().upload(imageName, imageUri, (progress) => setProgress(progress)).then(() => {
                 const clothingDao = new ClothingDao();
                 clothingDao.update(key, {
-                    image: url,
+                    image: imageName,
                 }).then(() => navigation.goBack());
             });
         } else {
@@ -93,6 +95,12 @@ const ClothingUpdateImage = ({ route, navigation }) => {
                     <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                 </TouchableOpacity>
             </View>
+            {progress > 0 ?
+                <View style={styles.ContainerProgressBar}>
+                    <ProgressBarComponent progress={progress} />
+                </View>
+                : null
+            }
         </View>
     );
 };

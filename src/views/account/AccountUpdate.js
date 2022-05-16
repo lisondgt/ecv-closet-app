@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
-import Preloader from '../../components/Preloader';
 import ImageLibrary from '../../components/ImageLibrary';
 import CameraLaunch from '../../components/CameraLaunch';
 import ModalComponent from '../../components/ModalComponent';
+import ProgressBarComponent from '../../components/ProgressBarComponent';
 import { useIsFocused } from "@react-navigation/native";
 import { AuthService } from '../../services/AuthService.js';
 import { StorageService } from '../../services/StorageService.js';
@@ -18,7 +18,6 @@ const AccountUpdate = ({ navigation }) => {
     const isFocused = useIsFocused();
     const authService = new AuthService();
     const currentUser = authService.getUser();
-    const [isLoading, setIsLoading] = useState(false);
     const [firstname, onChangeFirstname] = useState('');
     const [lastname, onChangeLastname] = useState('');
     const [imageUri, setImageUri] = useState(null);
@@ -29,6 +28,7 @@ const AccountUpdate = ({ navigation }) => {
     ) : (
         'Ajouter une photo'
     );
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
 
@@ -71,21 +71,15 @@ const AccountUpdate = ({ navigation }) => {
     const editUser = () => {
 
         if ((imageUri !== currentUser.photoURL) && (imageUri !== null)) {
-            setIsLoading(true);
-            new StorageService().uploadAndGetUrl(imageName, imageUri).then((photoURL) => {
+            new StorageService().uploadAndGetUrl(imageName, imageUri, (progress) => setProgress(progress)).then((photoURL) => {
                 return authService.editUser({ firstname, lastname, photoURL })
-                    .then(() => setIsLoading(false))
                     .then(() => navigation.goBack());
             });
         } else if (imageUri == currentUser.photoURL) {
-            setIsLoading(true);
             return authService.editUser({ firstname, lastname })
-                .then(() => setIsLoading(false))
                 .then(() => navigation.goBack());
         } else {
-            setIsLoading(true);
             return authService.editUser({ firstname, lastname, photoURL: '' })
-                .then(() => setIsLoading(false))
                 .then(() => navigation.goBack());
         }
     };
@@ -157,8 +151,10 @@ const AccountUpdate = ({ navigation }) => {
                     <Text style={styles.PrimaryButtonText}>Enregistrer</Text>
                 </TouchableOpacity>
             </View>
-            {isLoading === true ?
-                <Preloader />
+            {progress > 0 ?
+                <View style={styles.ContainerProgressBar}>
+                    <ProgressBarComponent progress={progress} />
+                </View>
                 : null
             }
         </View>

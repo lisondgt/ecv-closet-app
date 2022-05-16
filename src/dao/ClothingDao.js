@@ -1,6 +1,9 @@
 import { FirestoreDao } from './FirestoreDao';
+import { StorageService } from '../services/StorageService';
 
 export class ClothingDao extends FirestoreDao {
+    storageService = new StorageService();
+
     constructor() {
         super('clothing');
     }
@@ -13,9 +16,15 @@ export class ClothingDao extends FirestoreDao {
                 .get();
 
             if (result?.docs?.length > 0) {
-                return result.docs.map(doc => {
+                const docs = result.docs.map(doc => {
                     return { ...doc.data(), key: doc.id };
                 });
+                await Promise.all(docs.map((doc) => {
+                    return this.storageService.getUrl('/' + doc.image).then((url) => {
+                        doc.imageUrl = url;
+                    });
+                }));
+                return docs;
             }
 
             return [];
@@ -34,9 +43,15 @@ export class ClothingDao extends FirestoreDao {
                 .get();
 
             if (result?.docs?.length > 0) {
-                return result.docs.map(doc => {
+                const docs = result.docs.map(doc => {
                     return { ...doc.data(), key: doc.id };
                 });
+                await Promise.all(docs.map((doc) => {
+                    return this.storageService.getUrl('/' + doc.image).then((url) => {
+                        doc.imageUrl = url;
+                    });
+                }));
+                return docs;
             }
 
             return [];

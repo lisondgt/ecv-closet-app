@@ -28,15 +28,15 @@ export default function OutfitUpdateAccessories({ route, navigation }) {
     }, [isFocused]);
 
     const selectItem = (item) => {
-        if (accessories.accessoriesImage.length < 4 & !accessories.accessoriesImage.includes(item.image)) {
+        if (accessories.accessoriesImage.length < 4 & !accessories.accessoriesImage.includes(item.imageUrl)) {
             setAccessories({
                 ...accessories,
-                "accessoriesImage": [...accessories.accessoriesImage, item.image],
+                "accessoriesImage": [...accessories.accessoriesImage, item.imageUrl],
                 "accessoriesKey": [...accessories.accessoriesKey, item.key],
             });
-        } else if (accessories.accessoriesImage.includes(item.image)) {
+        } else if (accessories.accessoriesImage.includes(item.imageUrl)) {
             var arrayImage = [...accessories.accessoriesImage];
-            var indexImage = arrayImage.indexOf(item.image);
+            var indexImage = arrayImage.indexOf(item.imageUrl);
             arrayImage.splice(indexImage, 1);
             var arrayKey = [...accessories.accessoriesKey];
             var indexKey = arrayKey.indexOf(item.key);
@@ -64,13 +64,13 @@ export default function OutfitUpdateAccessories({ route, navigation }) {
                         onPress={() => selectItem(item)}>
                         <View style={fileStyle.AccessoriesCard}>
                             <Image
-                                source={{ uri: item.image }}
+                                source={{ uri: item.imageUrl }}
                                 style={
-                                    accessories.accessoriesImage.includes(item.image) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
+                                    accessories.accessoriesImage.includes(item.imageUrl) ? fileStyle.CardAccessoriesImgSelected : fileStyle.CardAccessoriesImg
                                 }
                             />
                             {
-                                accessories.accessoriesImage.includes(item.image) ?
+                                accessories.accessoriesImage.includes(item.imageUrl) ?
                                     <View style={fileStyle.CardAccessoriesCheck}>
                                         <CheckOrange width={15} height={15} />
                                     </View>

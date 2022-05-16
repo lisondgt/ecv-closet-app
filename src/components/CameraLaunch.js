@@ -10,8 +10,9 @@ export default function CameraLaunch({ onSelect }) {
 
     const cameraLaunch = () => {
         const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
+            maxWidth: 500,
+            maxHeight: 500,
+            quality: 0.5,
             storageOptions: {
                 skipBackup: true,
                 path: 'images'
@@ -23,7 +24,6 @@ export default function CameraLaunch({ onSelect }) {
             } else if (response.errorMessage) {
                 console.log('ImagePicker Error: ', response.errorMessage);
             } else {
-                setModalVisible(false);
                 const imageUri = response.assets.map(item => item.uri).toString();
                 const imageName = response.assets.map(item => item.fileName).toString();
                 onSelect(imageUri, imageName);

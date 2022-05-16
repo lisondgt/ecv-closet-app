@@ -167,7 +167,14 @@ const OutfitDetail = ({ route, navigation }) => {
                     :
                     <View style={fileStyle.CardButtonCol}>
                         <View style={fileStyle.CardButtonMargin}>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('OutfitUpdateAccessories', {
+                                    key: key,
+                                    values: {
+                                        accessoriesImage: outfitItem.accessoriesImage,
+                                        accessoriesKey: outfitItem.accessoriesKey
+                                    }
+                                })}>
                                 <View style={fileStyle.CardButtonAdd}>
                                     <View style={styles.CardAddIcon}>
                                         <IconPlusWhite width={20} height={20} />

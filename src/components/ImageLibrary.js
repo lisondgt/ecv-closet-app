@@ -10,8 +10,9 @@ export default function ImageLibrary({ onSelect }) {
 
     const selectImage = () => {
         const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
+            maxWidth: 500,
+            maxHeight: 500,
+            quality: 0.5,
             storageOptions: {
                 skipBackup: true,
                 path: 'images'

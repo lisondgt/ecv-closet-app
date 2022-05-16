@@ -97,12 +97,12 @@ const ClothingDetail = ({ route, navigation }) => {
                 <TouchableOpacity
                     onPress={() => navigation.navigate('ClothingUpdateImage', {
                         key: key,
-                        ItemValue: clothingItem.image,
+                        ItemValue: clothingItem.imageUrl,
                     })}>
                     <View style={viewStyles.ColImage}>
                         <View style={viewStyles.ContentImage}>
                             <Image
-                                source={{ uri: clothingItem.image }}
+                                source={{ uri: clothingItem.imageUrl }}
                                 style={viewStyles.Image}
                             />
                         </View>

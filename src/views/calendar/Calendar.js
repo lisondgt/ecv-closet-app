@@ -70,7 +70,6 @@ const Calendar = ({ navigation }) => {
       });
     }
     if (item.accessoriesKey.length > 0) {
-      console.log(item.accessoriesKey);
       item.accessoriesKey.map((item) => {
         clothingCalendarDao.push({
           date: selectedDate,
@@ -137,7 +136,7 @@ const Calendar = ({ navigation }) => {
         />
       </View>
       <Swiper style={fileStyle.wrapper} dotStyle={fileStyle.dotStyle} activeDotStyle={fileStyle.activeDotStyle}>
-        {outfitItems ?
+        {outfitItems.length > 0 ?
           outfitItems.map((item) => {
             return (
               <View key={item.key} style={fileStyle.SilderOutfit}>
