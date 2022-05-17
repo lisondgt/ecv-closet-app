@@ -131,6 +131,7 @@ const Signup = ({ navigation }) => {
       new StorageService().uploadAndGetUrl(imageName, imageUri, (progress) => setProgress(progress)).then((photoURL) => {
         return authService.signUp({ email, password, firstname, lastname, photoURL });
       });
+    } else {
       authService.signUp({ email, password, firstname, lastname });
     }
 
