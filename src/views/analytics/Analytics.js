@@ -35,29 +35,26 @@ const Analytics = () => {
     + clothingShoes.length
     + clothingAccessories.length;
   const [calendarClothing, setCalendarClothing] = useState([]);
-  const clothingWorn = [];
-  calendarClothing.forEach(obj => {
-    if (!clothingWorn.some(o => o.clothingKey === obj.clothingKey)) {
-      clothingWorn.push({ ...obj });
-    }
-  });
+
+  const filteredClothing = calendarClothing.filter(o => o.clothingKey !== calendarClothing.clothingKey);
+  const clothingWorn = [...filteredClothing];
   const pourcentageClothingWorn = Math.round((clothingWorn.length / totalItems) * 100);
+
+
 
   useEffect(() => {
 
     if (isFocused) {
       const clothingDao = new ClothingDao();
       const clothingCalendarDao = new ClothingCalendarDao();
-
-      clothingDao.fetchAllByType('Hauts', currentUserId).then(setClothingTops);
-      clothingDao.fetchAllByType('Pantalons', currentUserId).then(setClothingBottoms);
-      clothingDao.fetchAllByType('Robes', currentUserId).then(setClothingDresses);
-      clothingDao.fetchAllByType('Jupes', currentUserId).then(setClothingSkirts);
-      clothingDao.fetchAllByType('Vestes / Manteaux', currentUserId).then(setClothingLayers);
-      clothingDao.fetchAllByType('Chaussures', currentUserId).then(setClothingShoes);
-      clothingDao.fetchAllByType('Accessoires', currentUserId).then(setClothingAccessories);
-
-      clothingCalendarDao.fetchAllByUserId(currentUserId).then(setCalendarClothing);
+      clothingDao.fetchAllByType('Hauts', currentUserId).then(setClothingTops),
+        clothingDao.fetchAllByType('Pantalons', currentUserId).then(setClothingBottoms),
+        clothingDao.fetchAllByType('Robes', currentUserId).then(setClothingDresses),
+        clothingDao.fetchAllByType('Jupes', currentUserId).then(setClothingSkirts),
+        clothingDao.fetchAllByType('Vestes / Manteaux', currentUserId).then(setClothingLayers),
+        clothingDao.fetchAllByType('Chaussures', currentUserId).then(setClothingShoes),
+        clothingDao.fetchAllByType('Accessoires', currentUserId).then(setClothingAccessories),
+        clothingCalendarDao.fetchAllByUserId(currentUserId).then(setCalendarClothing);
     }
 
   }, [isFocused]);
@@ -130,7 +127,12 @@ const Analytics = () => {
           <Text style={viewStyles.TextLeft}>{pourcentageClothingWorn ? pourcentageClothingWorn : 0}% de votre placard porté</Text>
           <Text style={viewStyles.TextRight}>{clothingWorn.length} sur {totalItems}</Text>
         </View>
-        <ProgressBar progress={pourcentageClothingWorn ? pourcentageClothingWorn / 100 : 0} color={'#FFFFFF'} style={viewStyles.ProgressBar} />
+        <ProgressBar progress={
+          isNaN(pourcentageClothingWorn) ? 0
+            : pourcentageClothingWorn === Infinity ? 0
+              : !pourcentageClothingWorn ? 0
+                : pourcentageClothingWorn / 100
+        } color={'#FFFFFF'} style={viewStyles.ProgressBar} />
       </View>
       <View style={viewStyles.ContainerChiffresCles}>
         <View style={viewStyles.MarginChiffreCles}>

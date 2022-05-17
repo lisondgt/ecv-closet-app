@@ -12,9 +12,7 @@ export class OutfitService {
             return Promise.all(outfits.map((outfit) => {
                 return Promise.all([
                     this.fetchClothingImage(outfit.topKey).then((clothingImage) => {
-                        this.storageService.getUrl('/' + clothingImage).then((url) => {
-                            outfit.top = url;
-                        });
+                        outfit.top = clothingImage;
                     }),
                     this.fetchClothingImage(outfit.bottomKey).then((clothingImage) => {
                         outfit.bottom = clothingImage;

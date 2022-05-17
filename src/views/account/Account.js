@@ -50,24 +50,6 @@ const Account = ({ navigation }) => {
     authService.signOut();
   };
 
-  const deleteAccountAlert = () =>
-    Alert.alert(
-      "Supprimer mon compte",
-      "Êtes vous sûre de vouloir supprimer votre compte ?",
-      [
-        {
-          text: "Annuler",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "Oui", onPress: () => deleteAccount() }
-      ]
-    );
-
-  deleteAccount = () => {
-    authService.accountRemove();
-  };
-
   return (
     <View style={styles.ContainerView}>
       <Text style={styles.H1Title}>Mon compte</Text>
@@ -127,7 +109,7 @@ const Account = ({ navigation }) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => deleteAccountAlert()}>
+            onPress={() => navigation.navigate('AccountDelete')}>
             <View style={viewStyles.UserField}>
               <View style={viewStyles.ContentLeft}>
                 <Text style={styles.Text}>Supprimer mon compte</Text>

@@ -12,7 +12,7 @@ export default function SignupStep4({ password, onChangePassword, passwordErrorM
             </View>
             <View style={styles.MarginBottom20}>
                 <View style={styles.MarginBottom10}>
-                    <Text style={styles.Text}>Mot de passe</Text>
+                    <Text style={styles.Text}>Mot de passe *</Text>
                 </View>
                 <TextInput
                     style={styles.input}
@@ -25,7 +25,7 @@ export default function SignupStep4({ password, onChangePassword, passwordErrorM
             </View>
             <View style={styles.MarginBottom20}>
                 <View style={styles.MarginBottom10}>
-                    <Text style={styles.Text}>Confirmation du mot de passe</Text>
+                    <Text style={styles.Text}>Confirmation du mot de passe *</Text>
                 </View>
                 <TextInput
                     style={styles.input}

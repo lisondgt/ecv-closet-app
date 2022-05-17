@@ -12,6 +12,7 @@ const AccountUpdatePassword = ({ navigation }) => {
     const authService = new AuthService();
     const [isLoading, setIsLoading] = useState(false);
     const [currentPassword, onChangeCurrentPassword] = useState('');
+    const [currentPasswordErrorMessage, setCurrentPasswordErrorMessage] = useState('');
     const [newPassword, onChangeNewPassword] = useState('');
     const [newPasswordErrorMessage, setNewPasswordErrorMessage] = useState('');
     const [confirmNewPassword, onChangeConfirmNewPassword] = useState('');
@@ -21,6 +22,11 @@ const AccountUpdatePassword = ({ navigation }) => {
         let errorFlag = false;
 
         // input validation
+        if (currentPassword.length == 0) {
+            errorFlag = true;
+            setCurrentPasswordErrorMessage("Vous devez saisir votre ancien mot de passe");
+        }
+
         if (newPassword.length == 0) {
             errorFlag = true;
             setNewPasswordErrorMessage("Le mot de passe est requis");
@@ -87,6 +93,7 @@ const AccountUpdatePassword = ({ navigation }) => {
                     value={currentPassword}
                     secureTextEntry={true}
                 />
+                {currentPasswordErrorMessage ? <Text style={styles.textDanger}>{currentPasswordErrorMessage}</Text> : null}
             </View>
             <View style={styles.MarginBottom20}>
                 <View style={styles.MarginBottom10}>

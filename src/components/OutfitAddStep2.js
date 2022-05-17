@@ -65,7 +65,7 @@ export default function OutfitAddStep2({ values, selectHandler, seasonErrorMessa
             <View style={fileStyle.ContainerCardButton}>
                 {values.accessoriesImage.map((item) => {
                     return (
-                        <View style={fileStyle.CardButtonCol}>
+                        <View key={item} style={fileStyle.CardButtonCol}>
                             <View style={fileStyle.CardButtonMargin}>
                                 <TouchableOpacity
                                     onPress={nextStep}>

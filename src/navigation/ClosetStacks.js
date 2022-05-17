@@ -25,6 +25,7 @@ import OutfitUpdateSeason from '../views/outfits/OutfitUpdateSeason';
 import AccountUpdate from './../views/account/AccountUpdate';
 import AccountUpdateEmail from '../views/account/AccountUpdateEmail';
 import AccountUpdatePassword from '../views/account/AccountUpdatePassword';
+import AccountDelete from '../views/account/AcountDelete';
 
 import ClosetLogo from './../../assets/images/closet-logo.svg';
 
@@ -87,6 +88,7 @@ function ClosetStacks() {
           <Stack.Screen name="AccountUpdate" component={AccountUpdate} />
           <Stack.Screen name="AccountUpdateEmail" component={AccountUpdateEmail} />
           <Stack.Screen name="AccountUpdatePassword" component={AccountUpdatePassword} />
+          <Stack.Screen name="AccountDelete" component={AccountDelete} />
         </>
       ) : (
         <>

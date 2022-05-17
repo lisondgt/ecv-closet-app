@@ -12,7 +12,7 @@ export default function SignupStep2({ email, onChangeEmail, emailErrorMessage, n
             </View>
             <View style={styles.MarginBottom20}>
                 <View style={styles.MarginBottom10}>
-                    <Text style={styles.Text}>Email</Text>
+                    <Text style={styles.Text}>Email *</Text>
                 </View>
                 <TextInput
                     style={styles.input}
