@@ -10,7 +10,7 @@ const Home = ({ navigation }) => {
     <ImageBackground source={require('./../../../assets/images/background-home.png')} resizeMode="cover" style={viewStyles.ImageBackground}>
       <View style={styles.ContainerView}>
         <ClosetLogo width={230} height={83} style={viewStyles.Logo} />
-        <Text style={viewStyles.TextIntro}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+        <Text style={viewStyles.TextIntro}>Votre garde robe a porté de la main. Quand vous voulez</Text>
         <View style={styles.ContainerPrimaryButtonBottom}>
           <View style={styles.MarginBottom15}>
             <TouchableOpacity
@@ -30,7 +30,7 @@ const Home = ({ navigation }) => {
       </View>
     </ImageBackground>
   );
-}
+};
 
 const viewStyles = StyleSheet.create({
   ImageBackground: {
@@ -49,6 +49,6 @@ const viewStyles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 80
   }
-})
+});
 
 export default Home;
