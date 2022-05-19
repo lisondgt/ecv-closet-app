@@ -64,7 +64,7 @@ const Login = ({ navigation }) => {
       <Text style={styles.H2TitleCenter}>Content de te revoir !</Text>
       <View style={styles.MarginBottom20}>
         <View style={styles.MarginBottom10}>
-          <Text style={styles.Text}>Adresse email</Text>
+          <Text style={styles.Text}>Email</Text>
         </View>
         <TextInput
           style={styles.input}

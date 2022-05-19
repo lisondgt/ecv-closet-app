@@ -14,21 +14,20 @@ const AccountUpdateEmail = ({ navigation }) => {
     const [password, onChangePassword] = useState('');
     const [email, onChangeEmail] = useState(authService.getUser().email);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [errorPasswordMessage, setErrorPasswordMessage] = useState('');
 
     emailValidation = async () => {
         let errorFlag = false;
+        let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        setErrorPasswordMessage("");
 
         // input validation
-        if (email.length == 0) {
+        if (regEmail.test(email) === false) {
             errorFlag = true;
-            setEmailErrorMessage("L'email est requis");
+            setEmailErrorMessage("L'adresse e-mail est mal formatée");
         }
 
-        if (errorFlag) {
-            console.log("errorFlag");
-
-            /** Call Your API */
-        } else {
+        if (!errorFlag) {
             setEmailErrorMessage("");
             changeEmail();
         }
@@ -40,7 +39,15 @@ const AccountUpdateEmail = ({ navigation }) => {
             authService.changeEmail(email);
         })
             .then(() => setIsLoading(false))
-            .then(() => navigation.goBack());
+            .then(() => navigation.goBack())
+            .catch(error => {
+                setIsLoading(false);
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                        setErrorPasswordMessage('Vérifier votre mot de passe');
+                        break;
+                }
+            });
     };
 
     React.useLayoutEffect(() => {
@@ -70,6 +77,7 @@ const AccountUpdateEmail = ({ navigation }) => {
                     value={password}
                     secureTextEntry={true}
                 />
+                {errorPasswordMessage ? <Text style={styles.textDanger}>{errorPasswordMessage}</Text> : null}
             </View>
             <View>
                 <View style={styles.MarginBottom10}>

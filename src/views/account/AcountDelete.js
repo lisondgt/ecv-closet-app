@@ -23,11 +23,7 @@ const AccountDelete = ({ navigation }) => {
             setPasswordErrorMessage("Vous devez saisir votre mot de passe pour supprimer votre compte");
         }
 
-        if (errorFlag) {
-            console.log("errorFlag");
-
-            /** Call Your API */
-        } else {
+        if (!errorFlag) {
             setPasswordErrorMessage("");
             deleteAccountAlert();
         }
@@ -53,7 +49,15 @@ const AccountDelete = ({ navigation }) => {
             authService.accountRemove();
         })
             .then(() => setIsLoading(false))
-            .then(() => navigation.goBack());
+            .then(() => navigation.goBack())
+            .catch(error => {
+                setIsLoading(false);
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                        setPasswordErrorMessage('Vérifier votre mot de passe');
+                        break;
+                }
+            });
     };
 
     React.useLayoutEffect(() => {

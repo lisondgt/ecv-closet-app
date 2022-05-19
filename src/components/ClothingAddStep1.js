@@ -40,6 +40,10 @@ export default function ClothingAddStep1({ values, selectHandler, nextStep }) {
 
     return (
         <View>
+            <Text style={styles.H1Title}>Céer un vêtement</Text>
+            <View style={styles.MarginBottom15}>
+                <Text style={styles.Rext}>Ajoute une image de ton vêtement</Text>
+            </View>
             <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={modalTitle} modalContent={modalContent()} />
             {imageUri !== "" ? (
                 <View>

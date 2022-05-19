@@ -124,17 +124,6 @@ const AccountUpdate = ({ navigation }) => {
             </View>
             <View style={styles.MarginBottom20}>
                 <View style={styles.MarginBottom10}>
-                    <Text style={styles.Text}>Nom</Text>
-                </View>
-                <TextInput
-                    style={styles.input}
-                    label={"Nom"}
-                    onChangeText={onChangeLastname}
-                    value={lastname}
-                />
-            </View>
-            <View style={styles.MarginBottom20}>
-                <View style={styles.MarginBottom10}>
                     <Text style={styles.Text}>Prénom</Text>
                 </View>
                 <TextInput
@@ -142,6 +131,17 @@ const AccountUpdate = ({ navigation }) => {
                     label={"Prenom"}
                     onChangeText={onChangeFirstname}
                     value={firstname}
+                />
+            </View>
+            <View style={styles.MarginBottom20}>
+                <View style={styles.MarginBottom10}>
+                    <Text style={styles.Text}>Nom</Text>
+                </View>
+                <TextInput
+                    style={styles.input}
+                    label={"Nom"}
+                    onChangeText={onChangeLastname}
+                    value={lastname}
                 />
             </View>
             <View style={styles.ContainerPrimaryButtonBottom}>

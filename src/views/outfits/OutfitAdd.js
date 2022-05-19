@@ -91,11 +91,7 @@ const OutfitAdd = ({ navigation }) => {
       setSeasonErrorMessage("La saison est un champ obligatoire");
     }
 
-    if (errorFlag) {
-      console.log("errorFlag");
-
-      /** Call Your API */
-    } else {
+    if (!errorFlag) {
       setSeasonErrorMessage("");
       addItem();
     }

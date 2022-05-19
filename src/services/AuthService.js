@@ -39,14 +39,10 @@ export class AuthService {
     }
 
     async reauthenticate(password) {
-        try {
-            var user = auth().currentUser;
-            var cred = auth.EmailAuthProvider.credential(
-                user.email, password);
-            return user.reauthenticateWithCredential(cred);
-        } catch (err) {
-            console.error('[AuthService][reauthenticate]', err);
-        }
+        var user = auth().currentUser;
+        var cred = auth.EmailAuthProvider.credential(
+            user.email, password);
+        return user.reauthenticateWithCredential(cred);
     }
 
     async changeEmail(email) {

@@ -46,11 +46,7 @@ const AccountUpdatePassword = ({ navigation }) => {
             setConfirmNewPasswordErrorMessage("Le mot de passe et la confirmation ne correspondent pas");
         }
 
-        if (errorFlag) {
-            console.log("errorFlag");
-
-            /** Call Your API */
-        } else {
+        if (!errorFlag) {
             setNewPasswordErrorMessage("");
             setConfirmNewPasswordErrorMessage("");
             changePassword();
@@ -63,7 +59,15 @@ const AccountUpdatePassword = ({ navigation }) => {
             authService.changePassword(newPassword);
         })
             .then(() => setIsLoading(false))
-            .then(() => navigation.goBack());
+            .then(() => navigation.goBack())
+            .catch(error => {
+                setIsLoading(false);
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                        setCurrentPasswordErrorMessage('Vérifier votre mot de passe');
+                        break;
+                }
+            });
     };
 
     React.useLayoutEffect(() => {

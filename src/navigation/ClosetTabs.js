@@ -45,6 +45,18 @@ function ClosetTabs() {
         headerShadowVisible: false,
       }}>
       <Tab.Screen
+        name="Analytics"
+        component={Analytics}
+        options={{
+          tabBarLabel: 'Analytics',
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused, size }) => (
+            focused
+              ? <AnalyticsOrange width={30} height={30} />
+              : <AnalyticsDark width={30} height={30} />
+          ),
+        }} />
+      <Tab.Screen
         name="ClothingList"
         component={ClothingList}
         options={{
@@ -78,18 +90,6 @@ function ClosetTabs() {
             focused
               ? <CalendarOrange width={30} height={30} />
               : <CalendarDark width={30} height={30} />
-          ),
-        }} />
-      <Tab.Screen
-        name="Analytics"
-        component={Analytics}
-        options={{
-          tabBarLabel: 'Analytics',
-          tabBarShowLabel: false,
-          tabBarIcon: ({ focused, size }) => (
-            focused
-              ? <AnalyticsOrange width={30} height={30} />
-              : <AnalyticsDark width={30} height={30} />
           ),
         }} />
       <Tab.Screen

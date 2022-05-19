@@ -11,7 +11,7 @@ import CameraGrey from '../../assets/images/camera-grey.svg';
 export default function SignupStep3({ imageUri, setImageUri, setImageName, nextStep }) {
 
     const [modalVisible, setModalVisible] = useState(false);
-    const modalTitle = imageUri !== "" ? (
+    const modalTitle = imageUri !== null ? (
         'Modifier la photo'
     ) : (
         'Ajouter une photo'
