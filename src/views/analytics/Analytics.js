@@ -36,8 +36,12 @@ const Analytics = () => {
     + clothingAccessories.length;
   const [calendarClothing, setCalendarClothing] = useState([]);
 
-  const filteredClothing = calendarClothing.filter(o => o.clothingKey !== calendarClothing.clothingKey);
-  const clothingWorn = [...filteredClothing];
+  const clothingWorn = [];
+  calendarClothing.forEach(obj => {
+    if (!clothingWorn.some(o => o.clothingKey === obj.clothingKey)) {
+      clothingWorn.push({ ...obj });
+    }
+  });
   const pourcentageClothingWorn = Math.round((clothingWorn.length / totalItems) * 100);
 
 
