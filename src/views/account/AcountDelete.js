@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 import Preloader from '../../components/Preloader';
+import ModalComponent from '../../components/ModalComponent';
 import { AuthService } from '../../services/AuthService.js';
 
 import styles from '../../../assets/styles/style.js';
@@ -13,6 +14,7 @@ const AccountDelete = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [currentPassword, onChangeCurrentPassword] = useState('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
 
     passwordValidation = async () => {
         let errorFlag = false;
@@ -25,31 +27,30 @@ const AccountDelete = ({ navigation }) => {
 
         if (!errorFlag) {
             setPasswordErrorMessage("");
-            deleteAccountAlert();
+            setModalVisible(true);
         }
     };
 
-    const deleteAccountAlert = () =>
-        Alert.alert(
-            "Supprimer mon compte",
-            "Êtes vous sûre de vouloir supprimer votre compte ?",
-            [
-                {
-                    text: "Annuler",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "Oui", onPress: () => deleteAccount() }
-            ]
+    const modalContent = () => {
+        return (
+            <View>
+                <TouchableOpacity
+                    onPress={() => deleteAccount()}
+                    style={styles.PrimaryButton}
+                >
+                    <Text style={styles.PrimaryButtonText}>Supprimer mon compte</Text>
+                </TouchableOpacity>
+            </View>
         );
+    };
 
     deleteAccount = () => {
         setIsLoading(true);
+        setModalVisible(false);
         authService.reauthenticate(currentPassword).then(() => {
             authService.accountRemove();
         })
             .then(() => setIsLoading(false))
-            .then(() => navigation.goBack())
             .catch(error => {
                 setIsLoading(false);
                 switch (error.code) {
@@ -75,6 +76,7 @@ const AccountDelete = ({ navigation }) => {
 
     return (
         <View style={styles.ContainerView}>
+            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={"Êtes vous sûre de vouloir supprimer votre compte ?"} modalContent={modalContent()} />
             <Text style={styles.H1Title}>Suprimer mon compte</Text>
             <View>
                 <View style={styles.MarginBottom10}>

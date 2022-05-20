@@ -286,10 +286,14 @@ export default StyleSheet.create({
     modalHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         marginBottom: 20,
     },
+    modalTitle: {
+        width: 250
+    },
     modalClose: {
+        marginTop: 3,
         marginLeft: 10
     },
     input: {

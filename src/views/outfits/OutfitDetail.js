@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
+import ModalComponent from '../../components/ModalComponent';
 import { OutfitDao } from '../../dao/OutfitDao.js';
 import { OutfitCalendarDao } from '../../dao/OutfitCalendarDao.js';
 import { ClothingCalendarDao } from '../../dao/ClothingCalendarDao.js';
@@ -19,6 +20,7 @@ const OutfitDetail = ({ route, navigation }) => {
 
     const { key } = route.params;
     const [outfitItem, setOutfitItem] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -30,36 +32,46 @@ const OutfitDetail = ({ route, navigation }) => {
 
     }, [isFocused]);
 
-    const deleteItem = () => {
-        const outfitDao = new OutfitDao();
-        const clothingCalendarDao = new ClothingCalendarDao();
+    const modalContent = () => {
+        return (
+            <View>
+                <TouchableOpacity
+                    onPress={() => deleteItem()}
+                    style={styles.PrimaryButton}
+                >
+                    <Text style={styles.PrimaryButtonText}>Supprimer</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    function deleteItem() {
         const outfitCalendarDao = new OutfitCalendarDao();
-        outfitDao.remove(key).then(() => navigation.navigate('OutfitList'));
+        const clothingCalendarDao = new ClothingCalendarDao();
+        const outfitDao = new OutfitDao();
+
         outfitCalendarDao.removeCalendarByOutfitKey(key);
-        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.topKey);
-        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.bottomKey);
-        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.layerKey);
-        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.shoesKey);
-        if (outfitItem.accessoriesKey.length > 0) {
+        if (outfitItem.topKey) {
+            clothingCalendarDao.removeCalendarByClothingKey(outfitItem.topKey);
+        }
+        if (outfitItem.bottomKey) {
+            clothingCalendarDao.removeCalendarByClothingKey(outfitItem.bottomKey);
+        }
+        if (outfitItem.layerKey) {
+            clothingCalendarDao.removeCalendarByClothingKey(outfitItem.layerKey);
+        }
+        if (outfitItem.shoesKey) {
+            clothingCalendarDao.removeCalendarByClothingKey(outfitItem.shoesKey);
+        }
+        if (outfitItem.accessoriesKey && outfitItem.accessoriesKey.length > 0) {
             outfitItem.accessoriesKey.map((item) => {
                 clothingCalendarDao.removeCalendarByClothingKey(item);
             });
         }
+        outfitDao.remove(key)
+            .then(() => setModalVisible(false))
+            .then(() => navigation.navigate('OutfitList'));
     };
-
-    const deteteAlert = () =>
-        Alert.alert(
-            "Supprimer",
-            "Êtes vous sûre de vouloir supprimer cette tenue ?",
-            [
-                {
-                    text: "Annuler",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "OK", onPress: () => deleteItem() }
-            ]
-        );
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -73,7 +85,7 @@ const OutfitDetail = ({ route, navigation }) => {
             ),
             headerRight: () => (
                 <TouchableOpacity
-                    onPress={deteteAlert}
+                    onPress={() => setModalVisible(true)}
                     style={styles.IconHeaderRight}>
                     <TrashIconOrange width={25} height={25} />
                 </TouchableOpacity>
@@ -83,6 +95,7 @@ const OutfitDetail = ({ route, navigation }) => {
 
     return (
         <View style={styles.ContainerView}>
+            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={"Êtes vous sûre de vouloir supprimer cette tenue ?"} modalContent={modalContent()} />
             <TouchableOpacity
                 onPress={() => navigation.navigate('OutfitUpdate', {
                     key: key,

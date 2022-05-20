@@ -19,7 +19,9 @@ export default function ModalComponent({ modalVisible, setModalVisible, modalTit
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <View style={styles.modalHeader}>
-                        <Text style={styles.H3TitleNoMargin}>{modalTitle}</Text>
+                        <View style={styles.modalTitle}>
+                            <Text style={styles.H3TitleNoMargin}>{modalTitle}</Text>
+                        </View>
                         <TouchableOpacity
                             style={styles.modalClose}
                             onPress={() => setModalVisible(!modalVisible)}>

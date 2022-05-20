@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
+import ModalComponent from '../../components/ModalComponent';
 import { AuthService } from '../../services/AuthService';
 
 import styles from '../../../assets/styles/style.js';
@@ -14,6 +15,7 @@ const Account = ({ navigation }) => {
   const authService = new AuthService();
   const currentUser = authService.getUser();
   const isFocused = useIsFocused();
+  const [modalVisible, setModalVisible] = useState(false);
   const [user, setUser] = useState({
     displayName: '',
     photoURL: null,
@@ -32,26 +34,26 @@ const Account = ({ navigation }) => {
 
   }, [isFocused]);
 
-  const SignOutAlert = () =>
-    Alert.alert(
-      "Deconnexion",
-      "Êtes vous sûre de vouloir vous deconnecter ?",
-      [
-        {
-          text: "Annuler",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "Oui", onPress: () => signOut() }
-      ]
+  const modalContent = () => {
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => signOut()}
+          style={styles.PrimaryButton}
+        >
+          <Text style={styles.PrimaryButtonText}>Deconnexion</Text>
+        </TouchableOpacity>
+      </View>
     );
+  };
 
   signOut = () => {
-    authService.signOut();
+    authService.signOut().then(() => setModalVisible(false));
   };
 
   return (
     <View style={styles.ContainerView}>
+      <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={"Êtes vous sûre de vouloir vous deconnecter ?"} modalContent={modalContent()} />
       <Text style={styles.H1Title}>Mon compte</Text>
       <View style={styles.MarginBottom10}>
         <View style={styles.contentCenter}>
@@ -120,7 +122,7 @@ const Account = ({ navigation }) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => SignOutAlert()}>
+            onPress={() => setModalVisible(true)}>
             <View style={viewStyles.UserField}>
               <View style={viewStyles.ContentLeft}>
                 <Text style={styles.Text}>Deconnexion</Text>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import RatingStars from '../../components/RatingStars';
+import ModalComponent from '../../components/ModalComponent';
 import { ClothingDao } from './../../dao/ClothingDao';
+import { OutfitDao } from '../../dao/OutfitDao';
+import { ClothingCalendarDao } from '../../dao/ClothingCalendarDao.js';
 
 import styles from './../../../assets/styles/style.js';
 
@@ -41,6 +44,7 @@ const ClothingDetail = ({ route, navigation }) => {
     const { key } = route.params;
     const [clothingItem, setClothingItem] = useState([]);
     const maxRating = RatingData;
+    const [modalVisible, setModalVisible] = useState(false);
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -52,24 +56,44 @@ const ClothingDetail = ({ route, navigation }) => {
 
     }, [isFocused]);
 
-    const deleteItem = () => {
-        const clothingDao = new ClothingDao();
-        clothingDao.remove(key).then(() => navigation.navigate('ClothingList'));
+    const modalContent = () => {
+        return (
+            <View>
+                <TouchableOpacity
+                    onPress={() => deleteItem()}
+                    style={styles.PrimaryButton}
+                >
+                    <Text style={styles.PrimaryButtonText}>Supprimer</Text>
+                </TouchableOpacity>
+            </View>
+        );
     };
 
-    const deteteAlert = () =>
-        Alert.alert(
-            "Supprimer",
-            "Êtes vous sûre de vouloir supprimer cet article ?",
-            [
-                {
-                    text: "Annuler",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "OK", onPress: () => deleteItem() }
-            ]
-        );
+    function deleteItem() {
+        const clothingCalendarDao = new ClothingCalendarDao();
+        const outfitDao = new OutfitDao();
+        const clothingDao = new ClothingDao();
+
+        clothingCalendarDao.removeCalendarByClothingKey(key);
+        if (clothingItem.type == 'Hauts') {
+            outfitDao.removeTopKey(key);
+        } else if (clothingItem.type === 'Pantalons') {
+            outfitDao.removeBottomKey(key);
+        } else if (clothingItem.type == 'Robes') {
+            outfitDao.removeBottomKey(key);
+        } else if (clothingItem.type == 'Jupes') {
+            outfitDao.removeBottomKey(key);
+        } else if (clothingItem.type == 'Vestes / Manteaux') {
+            outfitDao.removeLayerKey(key);
+        } else if (clothingItem.type == 'Chaussures') {
+            outfitDao.removeShoesKey(key);
+        } else if (clothingItem.type == 'Accessoires') {
+            outfitDao.removeAccessoriesKey(key);
+        }
+        clothingDao.remove(key)
+            .then(() => setModalVisible(false))
+            .then(() => navigation.navigate('ClothingList'));
+    };
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -83,7 +107,7 @@ const ClothingDetail = ({ route, navigation }) => {
             ),
             headerRight: () => (
                 <TouchableOpacity
-                    onPress={deteteAlert}
+                    onPress={() => setModalVisible(true)}
                     style={styles.IconHeaderRight}>
                     <TrashIconOrange width={25} height={25} />
                 </TouchableOpacity>
@@ -93,6 +117,7 @@ const ClothingDetail = ({ route, navigation }) => {
 
     return (
         <View style={styles.ContainerView}>
+            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} modalTitle={"Êtes vous sûre de vouloir supprimer ce vêtement ?"} modalContent={modalContent()} />
             <View style={viewStyles.ContainerImage}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('ClothingUpdateImage', {
