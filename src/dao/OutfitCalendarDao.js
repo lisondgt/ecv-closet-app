@@ -19,7 +19,7 @@ export class OutfitCalendarDao extends FirestoreDao {
 
             return [];
         } catch (err) {
-            console.error('[OutfitDao][fetchAllById]', err);
+            console.error('[OutfitCalendarDao][fetchAllById]', err);
 
             return null;
         }
@@ -40,7 +40,27 @@ export class OutfitCalendarDao extends FirestoreDao {
 
             return [];
         } catch (err) {
-            console.error('[OutfitDao][fetchAllByDateAndOutfitKey]', err);
+            console.error('[OutfitCalendarDao][fetchAllByDateAndOutfitKey]', err);
+
+            return null;
+        }
+    }
+
+    async fetchAllByOutfitKey(outfitKey) {
+        try {
+            const result = await this.getCollection()
+                .where('outfitKey', '==', outfitKey)
+                .get();
+
+            if (result?.docs?.length > 0) {
+                return result.docs.map(doc => {
+                    return { ...doc.data(), key: doc.id };
+                });
+            }
+
+            return [];
+        } catch (err) {
+            console.error('[OutfitCalendarDao][fetchAllByOutfitKey]', err);
 
             return null;
         }
@@ -48,6 +68,14 @@ export class OutfitCalendarDao extends FirestoreDao {
 
     async removeCalendar(selectedDate, outfitKey) {
         return this.fetchAllByDateAndOutfitKey(selectedDate, outfitKey).then((outfitCalendars) => {
+            return Promise.all(outfitCalendars.map((item) => {
+                this.remove(item.key);
+            }));
+        });
+    }
+
+    async removeCalendarByOutfitKey(outfitKey) {
+        return this.fetchAllByOutfitKey(outfitKey).then((outfitCalendars) => {
             return Promise.all(outfitCalendars.map((item) => {
                 this.remove(item.key);
             }));

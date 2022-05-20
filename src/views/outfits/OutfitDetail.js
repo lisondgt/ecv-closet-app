@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { OutfitDao } from '../../dao/OutfitDao.js';
+import { OutfitCalendarDao } from '../../dao/OutfitCalendarDao.js';
+import { ClothingCalendarDao } from '../../dao/ClothingCalendarDao.js';
 import { OutfitService } from '../../services/OutfitService.js';
 
 import styles from './../../../assets/styles/style.js';
@@ -30,7 +32,19 @@ const OutfitDetail = ({ route, navigation }) => {
 
     const deleteItem = () => {
         const outfitDao = new OutfitDao();
+        const clothingCalendarDao = new ClothingCalendarDao();
+        const outfitCalendarDao = new OutfitCalendarDao();
         outfitDao.remove(key).then(() => navigation.navigate('OutfitList'));
+        outfitCalendarDao.removeCalendarByOutfitKey(key);
+        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.topKey);
+        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.bottomKey);
+        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.layerKey);
+        clothingCalendarDao.removeCalendarByClothingKey(outfitItem.shoesKey);
+        if (outfitItem.accessoriesKey.length > 0) {
+            outfitItem.accessoriesKey.map((item) => {
+                clothingCalendarDao.removeCalendarByClothingKey(item);
+            });
+        }
     };
 
     const deteteAlert = () =>
